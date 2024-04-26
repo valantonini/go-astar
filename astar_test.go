@@ -33,7 +33,7 @@ func TestPath(t *testing.T) {
 		{3, 1},
 	}
 	if len(got) != len(want) {
-		t.Errorf("len want %d got %d", len(want), len(got))
+		t.Fatalf("len want %d got %d", len(want), len(got))
 	}
 	for i := range want {
 		if got[i] != want[i] {

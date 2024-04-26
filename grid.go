@@ -18,12 +18,20 @@ func (b *Grid) Get(x, y int) byte {
 	return b.Cells[idx]
 }
 
-func (b *Grid) String() string {
+func NewGrid(width, height int) Grid {
+	return Grid{
+		Width:  width,
+		Height: height,
+		Cells:  make([]byte, width*height),
+	}
+}
+
+func RenderAsString(grid *Grid) string {
 	sb := &strings.Builder{}
 	sb.WriteString("\n")
-	for x := range b.Width {
-		for y := range b.Height {
-			val := b.Get(x, y)
+	for x := range grid.Width {
+		for y := range grid.Height {
+			val := grid.Get(x, y)
 			switch val {
 			case 0:
 				sb.WriteString(".")
@@ -36,12 +44,4 @@ func (b *Grid) String() string {
 		sb.WriteString("\n")
 	}
 	return sb.String()
-}
-
-func NewGrid(width, height int) Grid {
-	return Grid{
-		Width:  width,
-		Height: height,
-		Cells:  make([]byte, width*height),
-	}
 }
