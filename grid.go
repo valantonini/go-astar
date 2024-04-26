@@ -29,26 +29,6 @@ func (b *Grid) Get(x, y int) int {
 	return b.Cells[idx]
 }
 
-func (b *Grid) Neighbours(x, y int) []Node {
-	results := make([]Node, 0, len(neighbours))
-	for _, n := range neighbours {
-		x := x + n[0]
-		y := y + n[1]
-
-		if x < 0 || x >= b.Width || y < 0 || y >= b.Height {
-			continue
-		}
-
-		n := Node{
-			F:      0,
-			Pos:    Vec2{x, y},
-			Weight: b.Get(x, y),
-		}
-		results = append(results, n)
-	}
-	return results
-}
-
 func NewGrid(width, height int) Grid {
 	grid := Grid{
 		Width:  width,
