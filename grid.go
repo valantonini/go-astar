@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 type Grid struct {
 	Width  int
 	Height int
@@ -14,6 +16,26 @@ func (b *Grid) Set(x, y int, val byte) {
 func (b *Grid) Get(x, y int) byte {
 	idx := y*b.Width + x
 	return b.Cells[idx]
+}
+
+func (b *Grid) String() string {
+	sb := &strings.Builder{}
+	sb.WriteString("\n")
+	for x := range b.Width {
+		for y := range b.Height {
+			val := b.Get(x, y)
+			switch val {
+			case 0:
+				sb.WriteString(".")
+				break
+			default:
+				sb.WriteRune(rune(val + 48))
+				break
+			}
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }
 
 func NewGrid(width, height int) Grid {
