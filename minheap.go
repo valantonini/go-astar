@@ -6,8 +6,9 @@ type Vec2 struct {
 }
 
 type Node struct {
-	F   int
-	Pos Vec2
+	F      int
+	Pos    Vec2
+	Weight int
 }
 
 type MinHeap struct {

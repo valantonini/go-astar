@@ -2,6 +2,13 @@ package main
 
 import "strings"
 
+var neighbours = [4][2]int{
+	{0, -1}, // Up
+	{1, 0},  // Right
+	{0, 1},  // Down
+	{-1, 0}, // Left
+}
+
 type Grid struct {
 	Width  int
 	Height int
@@ -16,6 +23,26 @@ func (b *Grid) Set(x, y int, val byte) {
 func (b *Grid) Get(x, y int) byte {
 	idx := y*b.Width + x
 	return b.Cells[idx]
+}
+
+func (b *Grid) Neighbours(x, y int) []Node {
+	results := make([]Node, 0, len(neighbours))
+	for _, n := range neighbours {
+		x := x + n[0]
+		y := y + n[1]
+
+		if x < 0 || x >= b.Width || y < 0 || y >= b.Height {
+			continue
+		}
+
+		n := Node{
+			F:      0,
+			Pos:    Vec2{x, y},
+			Weight: int(b.Get(x, y)),
+		}
+		results = append(results, n)
+	}
+	return results
 }
 
 func NewGrid(width, height int) Grid {
