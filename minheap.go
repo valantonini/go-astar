@@ -1,11 +1,21 @@
 package main
 
+type Vec2 struct {
+	X int
+	Y int
+}
+
 type Node struct {
-	F int
+	F   int
+	Pos Vec2
 }
 
 type MinHeap struct {
 	inner []Node
+}
+
+func (h *MinHeap) Len() int {
+	return len(h.inner)
 }
 
 func (h *MinHeap) Push(elem Node) {

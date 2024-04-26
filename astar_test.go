@@ -23,7 +23,7 @@ func TestPath(t *testing.T) {
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(1, 1, 3, 3)
-	want := []Point{
+	want := []Vec2{
 		{1, 1},
 		{1, 2},
 		{1, 3},
