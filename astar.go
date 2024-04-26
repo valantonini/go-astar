@@ -49,10 +49,6 @@ func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 			successor.F = successor.G + successor.H
 			successor.Weight = p.grid.Get(successor.Pos.X, successor.Pos.Y)
 
-			if open.FValAt(successor.Pos.X, successor.Pos.Y) < successor.F {
-				continue
-			}
-
 			if closed.Get(successor.Pos.X, successor.Pos.Y) < successor.F {
 				// already found better
 				continue
