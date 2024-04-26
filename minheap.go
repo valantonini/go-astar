@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 type Vec2 struct {
 	X int
 	Y int
@@ -9,13 +11,30 @@ type Node struct {
 	F      int
 	Pos    Vec2
 	Weight int
-	Parent *Vec2
+	Parent *Node
 	G      int
 	H      int
 }
 
 type MinHeap struct {
-	inner []Node
+	width  int
+	height int
+	fVals  []int
+	inner  []Node
+}
+
+func NewMinHeap(width, height int) *MinHeap {
+	heap := &MinHeap{
+		width:  width,
+		height: height,
+		fVals:  make([]int, width*height),
+	}
+
+	for i := range heap.fVals {
+		heap.fVals[i] = math.MaxInt
+	}
+
+	return heap
 }
 
 func (h *MinHeap) Len() int {
@@ -23,9 +42,11 @@ func (h *MinHeap) Len() int {
 }
 
 func (h *MinHeap) Push(elem Node) {
+	idx := elem.Pos.Y*h.width + elem.Pos.X
+	h.fVals[idx] = elem.F
+
 	h.inner = append(h.inner, elem)
 	curr := len(h.inner) - 1
-
 	for {
 		if curr == 0 {
 			break
@@ -46,6 +67,11 @@ func (h *MinHeap) Peek() Node {
 		panic("heap empty")
 	}
 	return h.inner[0]
+}
+
+func (h *MinHeap) FValAt(x, y int) int {
+	idx := y*h.width + x
+	return h.fVals[idx]
 }
 
 func (h *MinHeap) Pop() (result Node) {
@@ -79,6 +105,9 @@ func (h *MinHeap) Pop() (result Node) {
 
 		h.inner[p], h.inner[pn] = h.inner[pn], h.inner[p]
 	}
+
+	// idx := result.Pos.Y*h.width + result.Pos.X
+	// h.fVals[idx] = math.MaxInt
 
 	return result
 }

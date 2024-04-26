@@ -5,7 +5,6 @@ import (
 )
 
 func TestPath(t *testing.T) {
-	t.Skip()
 	grid := NewGrid(5, 5)
 	m := []int{
 		1, 1, 1, 1, 1,
@@ -22,8 +21,10 @@ func TestPath(t *testing.T) {
 		}
 	}
 
+	t.Log(RenderAsString(&grid))
+
 	pathfinder := NewPathfinder(grid)
-	got := pathfinder.Find(1, 1, 3, 3)
+	got := pathfinder.Find(1, 1, 1, 3)
 	want := []Vec2{
 		{1, 1},
 		{1, 2},
@@ -34,11 +35,16 @@ func TestPath(t *testing.T) {
 		{3, 1},
 	}
 	if len(got) != len(want) {
+		t.Logf("got: %v", got)
 		t.Fatalf("len want %d got %d", len(want), len(got))
 	}
 	for i := range want {
 		if got[i] != want[i] {
 			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
 		}
+	}
+	if t.Failed() {
+		t.Logf("want: %v", want)
+		t.Logf("got: %v", got)
 	}
 }

@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 var neighbours = [4][2]int{
 	{0, -1}, // Up
@@ -46,11 +49,12 @@ func (b *Grid) Neighbours(x, y int) []Node {
 }
 
 func NewGrid(width, height int) Grid {
-	return Grid{
+	grid := Grid{
 		Width:  width,
 		Height: height,
 		Cells:  make([]int, width*height),
 	}
+	return grid
 }
 
 func RenderAsString(grid *Grid) string {
@@ -64,7 +68,7 @@ func RenderAsString(grid *Grid) string {
 				sb.WriteString(".")
 				break
 			default:
-				sb.WriteRune(rune(val + 48))
+				sb.WriteString(strconv.Itoa(val))
 				break
 			}
 		}

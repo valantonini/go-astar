@@ -1,5 +1,10 @@
 package main
 
+import (
+	"math"
+	"slices"
+)
+
 type Pathfinder struct {
 	grid Grid
 }
@@ -11,23 +16,53 @@ func NewPathfinder(grid Grid) Pathfinder {
 }
 
 func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
-	open := &MinHeap{}
+	open := NewMinHeap(p.grid.Width, p.grid.Height)
 	closed := NewGrid(p.grid.Width, p.grid.Height)
+	for x := 0; x < closed.Width; x++ {
+		for y := 0; y < closed.Height; y++ {
+			closed.Set(x, y, math.MaxInt)
+		}
+	}
 
-	open.Push(Node{Pos: Vec2{x1, y1}, F: 0})
+	node := Node{Pos: Vec2{x1, y1}, F: 0, Weight: p.grid.Get(x1, y1)}
+	open.Push(node)
+
 	for open.Len() > 0 {
 		q := open.Pop()
 		neighbours := p.grid.Neighbours(q.Pos.X, q.Pos.Y)
 		for _, successor := range neighbours {
-			successor.Parent = &Vec2{q.Pos.X, q.Pos.Y}
+			if p.grid.Get(successor.Pos.X, successor.Pos.Y) != 0 {
+				// successor blocked
+				continue
+			}
+
+			successor.Parent = &q
+
 			if successor.Pos.X == x2 && successor.Pos.Y == y2 {
 				// found
-				panic("found")
+				path := []Vec2{}
+				var n *Node = &successor
+				for n != nil {
+					path = append(path, n.Pos)
+					n = n.Parent
+				}
+				slices.Reverse(path)
+				return path
 			}
+
 			successor.G = q.G + manhattan(q.Pos.X, q.Pos.Y, successor.Pos.X, successor.Pos.Y)
 			successor.H = manhattan(successor.Pos.X, successor.Pos.Y, x2, y2)
 			successor.F = successor.G + successor.H
+			successor.Weight = p.grid.Get(successor.Pos.X, successor.Pos.Y)
 
+			if open.FValAt(successor.Pos.X, successor.Pos.Y) < successor.F {
+				continue
+			}
+
+			if closed.Get(successor.Pos.X, successor.Pos.Y) < successor.F {
+				// already found better
+				continue
+			}
 			open.Push(successor)
 		}
 		closed.Set(q.Pos.X, q.Pos.Y, q.F)
@@ -36,5 +71,11 @@ func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 }
 
 func manhattan(x1, y1, x2, y2 int) int {
-	return (x1 - x2) + (y1 - y2)
+	return abs(x1-x2) + abs(y1-y2)
+}
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
