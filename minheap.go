@@ -9,6 +9,9 @@ type Node struct {
 	F      int
 	Pos    Vec2
 	Weight int
+	Parent *Vec2
+	G      int
+	H      int
 }
 
 type MinHeap struct {
