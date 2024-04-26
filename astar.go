@@ -30,7 +30,7 @@ func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 
 			open.Push(successor)
 		}
-		closed.Set(q.Pos.X, q.Pos.Y, byte(q.F))
+		closed.Set(q.Pos.X, q.Pos.Y, q.F)
 	}
 	return []Vec2{}
 }

@@ -12,15 +12,15 @@ var neighbours = [4][2]int{
 type Grid struct {
 	Width  int
 	Height int
-	Cells  []byte
+	Cells  []int
 }
 
-func (b *Grid) Set(x, y int, val byte) {
+func (b *Grid) Set(x, y int, val int) {
 	idx := y*b.Width + x
 	b.Cells[idx] = val
 }
 
-func (b *Grid) Get(x, y int) byte {
+func (b *Grid) Get(x, y int) int {
 	idx := y*b.Width + x
 	return b.Cells[idx]
 }
@@ -49,7 +49,7 @@ func NewGrid(width, height int) Grid {
 	return Grid{
 		Width:  width,
 		Height: height,
-		Cells:  make([]byte, width*height),
+		Cells:  make([]int, width*height),
 	}
 }
 

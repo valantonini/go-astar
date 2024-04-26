@@ -12,7 +12,7 @@ func TestGrid(t *testing.T) {
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			i++
-			board.Set(x, y, byte(i))
+			board.Set(x, y, i)
 		}
 	}
 
@@ -21,7 +21,7 @@ func TestGrid(t *testing.T) {
 		for y := 0; y < board.Height; y++ {
 			want++
 			got := board.Get(x, y)
-			if got != byte(want) {
+			if got != want {
 				t.Errorf("pos %d,%d want %d got %d", x, y, want, got)
 			}
 		}
@@ -29,7 +29,7 @@ func TestGrid(t *testing.T) {
 }
 
 func TestGrid_Neighbours(t *testing.T) {
-	g := []byte{
+	g := []int{
 		1, 2, 3,
 		4, 5, 6,
 		7, 8, 9,
