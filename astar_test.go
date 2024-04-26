@@ -14,8 +14,8 @@ func TestPath(t *testing.T) {
 		1, 1, 1, 1, 1,
 	}
 	i := 0
-	for x := 0; x < grid.Width; x++ {
-		for y := 0; y < grid.Height; y++ {
+	for y := 0; y < grid.Height; y++ {
+		for x := 0; x < grid.Width; x++ {
 			grid.Set(x, y, m[i])
 			i++
 		}
@@ -24,7 +24,7 @@ func TestPath(t *testing.T) {
 	t.Log(RenderAsString(&grid))
 
 	pathfinder := NewPathfinder(grid)
-	got := pathfinder.Find(1, 1, 1, 3)
+	got := pathfinder.Find(1, 1, 3, 1)
 	want := []Vec2{
 		{1, 1},
 		{1, 2},

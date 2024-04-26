@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"slices"
 )
 
@@ -17,12 +16,7 @@ func NewPathfinder(grid Grid) Pathfinder {
 
 func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 	open := NewMinHeap(p.grid.Width, p.grid.Height)
-	closed := NewGrid(p.grid.Width, p.grid.Height)
-	for x := 0; x < closed.Width; x++ {
-		for y := 0; y < closed.Height; y++ {
-			closed.Set(x, y, math.MaxInt)
-		}
-	}
+	closed := NewMaxGrid(p.grid.Width, p.grid.Height)
 
 	node := Node{Pos: Vec2{x1, y1}, F: 0, Weight: p.grid.Get(x1, y1)}
 	open.Push(node)

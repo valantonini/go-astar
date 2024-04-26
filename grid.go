@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"strconv"
 	"strings"
 )
@@ -41,7 +42,7 @@ func (b *Grid) Neighbours(x, y int) []Node {
 		n := Node{
 			F:      0,
 			Pos:    Vec2{x, y},
-			Weight: int(b.Get(x, y)),
+			Weight: b.Get(x, y),
 		}
 		results = append(results, n)
 	}
@@ -57,11 +58,21 @@ func NewGrid(width, height int) Grid {
 	return grid
 }
 
+func NewMaxGrid(width, height int) Grid {
+	grid := NewGrid(width, height)
+	for x := 0; x < grid.Width; x++ {
+		for y := 0; y < grid.Height; y++ {
+			grid.Set(x, y, math.MaxInt)
+		}
+	}
+	return grid
+}
+
 func RenderAsString(grid *Grid) string {
 	sb := &strings.Builder{}
 	sb.WriteString("\n")
-	for x := range grid.Width {
-		for y := range grid.Height {
+	for y := range grid.Height {
+		for x := range grid.Width {
 			val := grid.Get(x, y)
 			switch val {
 			case 0:
