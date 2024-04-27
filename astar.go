@@ -32,7 +32,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 		q := open.Pop()
 		for _, succ := range getSuccessors(q.Pos, p.weights.Width, p.weights.Height) {
 			// cell is not traversable
-			if p.weights.Get(succ) != 0 {
+			if p.weights.Get(succ) == 0 {
 				continue
 			}
 

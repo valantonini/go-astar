@@ -91,11 +91,11 @@ func TestGetSuccessors(t *testing.T) {
 func TestPath_NoDiagonal1(t *testing.T) {
 	grid := NewGrid[int](5, 5)
 	m := []int{
-		1, 1, 1, 1, 1,
-		1, 0, 1, 0, 1,
-		1, 0, 1, 0, 1,
-		1, 0, 0, 0, 1,
-		1, 1, 1, 1, 1,
+		0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0,
 	}
 	i := 0
 	for y := 0; y < grid.Height; y++ {
@@ -135,10 +135,10 @@ func TestPath_NoDiagonal1(t *testing.T) {
 func TestPath_NoDiagonal2(t *testing.T) {
 	grid := NewGrid[int](8, 4)
 	m := []int{
-		1, 1, 1, 1, 1, 1, 1, 1,
-		1, 0, 1, 0, 0, 0, 1, 1,
-		1, 0, 0, 0, 1, 0, 0, 1,
-		1, 1, 1, 1, 1, 1, 1, 1,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 1, 1, 0, 0,
+		0, 1, 1, 1, 0, 1, 1, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
 	}
 	i := 0
 	for y := 0; y < grid.Height; y++ {
@@ -185,7 +185,7 @@ func renderAsString(grid *Grid[int]) string {
 			val := grid.Get(Vec2{x, y})
 			switch val {
 			case 0:
-				sb.WriteString(".")
+				sb.WriteRune('\u2588') // block █
 				break
 			default:
 				sb.WriteString(strconv.Itoa(val))
