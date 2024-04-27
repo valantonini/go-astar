@@ -186,10 +186,8 @@ func renderAsString(grid *Grid[int]) string {
 			switch val {
 			case 0:
 				sb.WriteRune('\u2588') // block █
-				break
 			default:
 				sb.WriteString(strconv.Itoa(val))
-				break
 			}
 		}
 		sb.WriteString("\n")
