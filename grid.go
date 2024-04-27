@@ -24,8 +24,8 @@ func (b *Grid) Set(x, y int, val int) {
 	b.Cells[idx] = val
 }
 
-func (b *Grid) Get(x, y int) int {
-	idx := y*b.Width + x
+func (b *Grid) Get(v Vec2) int {
+	idx := v.Y*b.Width + v.X
 	return b.Cells[idx]
 }
 
@@ -53,7 +53,7 @@ func RenderAsString(grid *Grid) string {
 	sb.WriteString("\n")
 	for y := range grid.Height {
 		for x := range grid.Width {
-			val := grid.Get(x, y)
+			val := grid.Get(Vec2{x, y})
 			switch val {
 			case 0:
 				sb.WriteString(".")

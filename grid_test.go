@@ -19,7 +19,7 @@ func TestGrid(t *testing.T) {
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			want++
-			got := board.Get(x, y)
+			got := board.Get(Vec2{x, y})
 			if got != want {
 				t.Errorf("pos %d,%d want %d got %d", x, y, want, got)
 			}
