@@ -4,9 +4,9 @@ package astar
 type node struct {
 	pos    Vec2  // Position
 	parent *node // Parent node
-	f      int   // F = G + H
 	g      int   // Cost from start node
 	h      int   // Heuristic cost to end node
+	f      int   // F = G + H
 	weight int   // Weight of the node (0 = impassable)
 	open   bool  // In open list
 	closed bool  // In closed list
