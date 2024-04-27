@@ -21,19 +21,19 @@ func TestMinHeap_Peek(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			heap := &MinHeap{}
+			heap := &minHeap{}
 			for _, n := range c.data {
-				heap.Push(node{F: n})
+				heap.push(node{f: n})
 			}
 
 			want := make([]int, len(c.data))
 			copy(want, c.data)
 			slices.Sort(want)
 
-			got := heap.Peek()
+			got := heap.peek()
 
-			if got.F != want[0] {
-				t.Errorf("want %v got %v", want[0], got.F)
+			if got.f != want[0] {
+				t.Errorf("want %v got %v", want[0], got.f)
 			}
 		})
 	}
@@ -55,9 +55,9 @@ func TestMinHeap_Pop(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			heap := &MinHeap{}
+			heap := &minHeap{}
 			for _, n := range c.data {
-				heap.Push(node{F: n})
+				heap.push(node{f: n})
 			}
 
 			want := make([]int, len(c.data))
@@ -65,9 +65,9 @@ func TestMinHeap_Pop(t *testing.T) {
 			slices.Sort(want)
 
 			for _, n := range want {
-				got := heap.Pop()
-				if got.F != n {
-					t.Errorf("want %v got %v", n, got.F)
+				got := heap.pop()
+				if got.f != n {
+					t.Errorf("want %v got %v", n, got.f)
 				}
 			}
 		})

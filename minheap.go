@@ -1,15 +1,15 @@
 package astar
 
-// MinHeap is a simple min heap implementation.
-type MinHeap struct {
+// minHeap is a specialized min heap that orders nodes by their F value.
+type minHeap struct {
 	width  int
 	height int
 	inner  []node
 }
 
-// NewMinHeap creates a new MinHeap with the given width and height.
-func NewMinHeap(width, height int) *MinHeap {
-	heap := &MinHeap{
+// newMinHeap creates a new MinHeap with the given width and height.
+func newMinHeap(width, height int) *minHeap {
+	heap := &minHeap{
 		width:  width,
 		height: height,
 	}
@@ -17,13 +17,13 @@ func NewMinHeap(width, height int) *MinHeap {
 	return heap
 }
 
-// Len returns the number of elements in the heap.
-func (h *MinHeap) Len() int {
+// len returns the number of elements in the heap.
+func (h *minHeap) len() int {
 	return len(h.inner)
 }
 
-// Push adds an element to the heap.
-func (h *MinHeap) Push(elem node) {
+// push adds an element to the heap.
+func (h *minHeap) push(elem node) {
 	h.inner = append(h.inner, elem)
 	curr := len(h.inner) - 1
 	for {
@@ -32,7 +32,7 @@ func (h *MinHeap) Push(elem node) {
 		}
 
 		parent := (curr - 1) / 2
-		if h.inner[curr].F < h.inner[parent].F {
+		if h.inner[curr].f < h.inner[parent].f {
 			h.inner[curr], h.inner[parent] = h.inner[parent], h.inner[curr]
 			curr = parent
 		} else {
@@ -41,18 +41,18 @@ func (h *MinHeap) Push(elem node) {
 	}
 }
 
-// Peek returns the element at the top of the heap. If the heap is empty, it
+// peek returns the element at the top of the heap. If the heap is empty, it
 // will panic.
-func (h *MinHeap) Peek() node {
+func (h *minHeap) peek() node {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
 	return h.inner[0]
 }
 
-// Pop removes and returns the element at the top of the heap. If the heap is
+// pop removes and returns the element at the top of the heap. If the heap is
 // empty,it will panic.
-func (h *MinHeap) Pop() (result node) {
+func (h *minHeap) pop() (result node) {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
@@ -70,11 +70,11 @@ func (h *MinHeap) Pop() (result node) {
 		right := 2*p + 2
 
 		// choose the smallest child for p
-		if len(h.inner) > left && h.inner[left].F < h.inner[p].F {
+		if len(h.inner) > left && h.inner[left].f < h.inner[p].f {
 			p = left
 		}
 
-		if len(h.inner) > right && h.inner[right].F < h.inner[p].F {
+		if len(h.inner) > right && h.inner[right].f < h.inner[p].f {
 			p = right
 		}
 

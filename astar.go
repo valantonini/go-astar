@@ -22,76 +22,80 @@ func NewPathfinder(weights Grid[int]) Pathfinder {
 
 // Find returns a path from start to end. If no path is found, an empty slice.
 func (p Pathfinder) Find(start, end Vec2) []Vec2 {
-	open := NewMinHeap(p.weights.Width, p.weights.Height)
-	searchSpace := newSearchSpace(p.weights)
+	open := newMinHeap(p.weights.Width, p.weights.Height)
+	searchSpace := newSearchSpace(p.weights) // tracks the open, closed and f values of each node
 
 	origin := node{
-		Pos:    start,
-		F:      0,
-		Weight: p.weights.Get(start),
-		Open:   true,
+		pos:    start,
+		f:      0,
+		weight: p.weights.Get(start),
+		open:   true,
 	}
-	open.Push(origin)
-	searchSpace.Set(origin.Pos, origin)
+	open.push(origin)
+	searchSpace.Set(origin.pos, origin)
 
-	for open.Len() > 0 {
-		q := open.Pop()
-		for _, succ := range getSuccessors(q.Pos, p.weights.Width, p.weights.Height) {
+	for open.len() > 0 {
+		q := open.pop()
+		for _, succ := range getSuccessors(q.pos, p.weights.Width, p.weights.Height) {
 			// cell is not traversable
 			if p.weights.Get(succ) == 0 {
 				continue
 			}
 
 			successor := node{
-				Pos:    Vec2{succ.X, succ.Y},
-				Weight: p.weights.Get(succ),
-				Parent: &q,
-				Open:   true,
+				pos:    Vec2{succ.X, succ.Y},
+				weight: p.weights.Get(succ),
+				parent: &q,
+				open:   true,
 			}
 
 			// found
-			if successor.Pos == end {
+			if successor.pos == end {
 				path := []Vec2{}
 				var curr *node = &successor
 				for curr != nil {
-					path = append(path, curr.Pos)
-					curr = curr.Parent
+					path = append(path, curr.pos)
+					curr = curr.parent
 				}
 				slices.Reverse(path)
 				return path
 			}
 
-			successor.G = q.G + manhattan(q.Pos, successor.Pos)
-			successor.H = manhattan(successor.Pos, end)
-			successor.F = successor.G + successor.H
-			successor.Weight = p.weights.Get(successor.Pos)
+			successor.g = q.g + manhattan(q.pos, successor.pos)
+			successor.h = manhattan(successor.pos, end)
+			successor.f = successor.g + successor.h
+			successor.weight = p.weights.Get(successor.pos)
 
-			ss := searchSpace.Get(successor.Pos)
+			ss := searchSpace.Get(successor.pos)
 
 			// better node with same position in open list
-			if ss.Open && ss.F < successor.F {
+			if ss.open && ss.f < successor.f {
 				continue
 			}
 
 			// better node with same position in closed list
-			if ss.Closed && ss.F < successor.F {
+			if ss.closed && ss.f < successor.f {
 				continue
 			}
 
-			searchSpace.Set(successor.Pos, successor)
-			open.Push(successor)
+			searchSpace.Set(successor.pos, successor)
+			open.push(successor)
 		}
 
-		s := searchSpace.Get(q.Pos)
-		s.Closed = true
+		s := searchSpace.Get(q.pos)
+		s.closed = true
 	}
 	return []Vec2{}
 }
 
+// manhattan calculates the Manhattan distance between two vectors by summing
+// the absolute values of the differences of their components. It does not
+// support diagonal movement.
 func manhattan(v1, v2 Vec2) int {
 	return abs(v1.X-v2.X) + abs(v1.Y-v2.Y)
 }
 
+// abs returns the absolute value of x.
 func abs(x int) int {
 	if x < 0 {
 		return -x
@@ -99,39 +103,42 @@ func abs(x int) int {
 	return x
 }
 
-var neighbours = [4][2]int{
+var successors = [4][2]int{
 	{0, -1}, // Up
 	{1, 0},  // Right
 	{0, 1},  // Down
 	{-1, 0}, // Left
 }
 
+// getSuccessors returns the successors of a vector. If a successor is outside
+// of the grid, it is not included.
 func getSuccessors(vec Vec2, width, height int) []Vec2 {
-	results := make([]Vec2, 0, len(neighbours))
-	for _, n := range neighbours {
+	results := make([]Vec2, 0, len(successors))
+	for _, n := range successors {
 		x := vec.X + n[0]
 		y := vec.Y + n[1]
 
 		if x < 0 || x >= width || y < 0 || y >= height {
 			continue
 		}
-		n := Vec2{x, y}
-		results = append(results, n)
+		v := Vec2{x, y}
+		results = append(results, v)
 	}
 	return results
 }
 
+// newSearchSpace creates a new search space from the given weights.
 func newSearchSpace(weights Grid[int]) Grid[node] {
-	g := NewGrid[node](weights.Width, weights.Height)
+	grid := NewGrid[node](weights.Width, weights.Height)
 	for x := range weights.Width {
 		for y := range weights.Height {
-			c := node{
-				Pos:    Vec2{x, y},
-				Weight: weights.Get(Vec2{x, y}),
-				F:      math.MaxInt,
+			node := node{
+				pos:    Vec2{x, y},
+				weight: weights.Get(Vec2{x, y}),
+				f:      math.MaxInt,
 			}
-			g.Set(Vec2{x, y}, c)
+			grid.Set(Vec2{x, y}, node)
 		}
 	}
-	return g
+	return grid
 }
