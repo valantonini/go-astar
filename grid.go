@@ -1,4 +1,4 @@
-package main
+package astar
 
 type Grid[T any] struct {
 	Width  int

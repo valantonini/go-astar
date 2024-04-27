@@ -1,4 +1,4 @@
-package main
+package astar
 
 type Vec2 struct {
 	X int
