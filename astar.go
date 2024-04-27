@@ -5,10 +5,10 @@ import (
 )
 
 type Pathfinder struct {
-	grid Grid
+	grid Grid[int]
 }
 
-func NewPathfinder(grid Grid) Pathfinder {
+func NewPathfinder(grid Grid[int]) Pathfinder {
 	return Pathfinder{
 		grid: grid,
 	}

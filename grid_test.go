@@ -5,7 +5,7 @@ import (
 )
 
 func TestGrid(t *testing.T) {
-	board := NewGrid(3, 3)
+	board := NewGrid[int](3, 3)
 
 	i := 0
 	for x := 0; x < board.Width; x++ {

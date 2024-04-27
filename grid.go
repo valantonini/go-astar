@@ -13,23 +13,23 @@ var neighbours = [4][2]int{
 	{-1, 0}, // Left
 }
 
-type Grid struct {
+type Grid[T any] struct {
 	Width  int
 	Height int
-	inner  []int
+	inner  []T
 }
 
-func NewGrid(width, height int) Grid {
-	grid := Grid{
+func NewGrid[T any](width, height int) Grid[T] {
+	grid := Grid[T]{
 		Width:  width,
 		Height: height,
-		inner:  make([]int, width*height),
+		inner:  make([]T, width*height),
 	}
 	return grid
 }
 
-func NewMaxGrid(width, height int) Grid {
-	grid := NewGrid(width, height)
+func NewMaxGrid[T int](width, height int) Grid[T] {
+	grid := NewGrid[T](width, height)
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {
 			grid.Set(x, y, math.MaxInt)
@@ -38,17 +38,17 @@ func NewMaxGrid(width, height int) Grid {
 	return grid
 }
 
-func (b *Grid) Set(x, y int, val int) {
+func (b *Grid[T]) Set(x, y int, val T) {
 	idx := y*b.Width + x
 	b.inner[idx] = val
 }
 
-func (b *Grid) Get(v Vec2) int {
+func (b *Grid[T]) Get(v Vec2) T {
 	idx := v.Y*b.Width + v.X
 	return b.inner[idx]
 }
 
-func RenderAsString(grid *Grid) string {
+func RenderAsString(grid *Grid[int]) string {
 	sb := &strings.Builder{}
 	sb.WriteString("\n")
 	for y := range grid.Height {

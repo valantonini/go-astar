@@ -11,7 +11,7 @@ func TestGetSuccessors(t *testing.T) {
 		4, 5, 6,
 		7, 8, 9,
 	}
-	grid := NewGrid(3, 3)
+	grid := NewGrid[int](3, 3)
 	i := 0
 	for y := 0; y < grid.Height; y++ {
 		for x := 0; x < grid.Width; x++ {
@@ -87,7 +87,7 @@ func TestGetSuccessors(t *testing.T) {
 	}
 }
 func TestPath_NoDiagonal1(t *testing.T) {
-	grid := NewGrid(5, 5)
+	grid := NewGrid[int](5, 5)
 	m := []int{
 		1, 1, 1, 1, 1,
 		1, 0, 1, 0, 1,
@@ -130,7 +130,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 	}
 }
 func TestPath_NoDiagonal2(t *testing.T) {
-	grid := NewGrid(8, 4)
+	grid := NewGrid[int](8, 4)
 	m := []int{
 		1, 1, 1, 1, 1, 1, 1, 1,
 		1, 0, 1, 0, 0, 0, 1, 1,
