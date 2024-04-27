@@ -88,6 +88,7 @@ func TestGetSuccessors(t *testing.T) {
 		})
 	}
 }
+
 func TestPath_NoDiagonal1(t *testing.T) {
 	grid := NewGrid[int](5, 5)
 	m := []int{
@@ -129,6 +130,33 @@ func TestPath_NoDiagonal1(t *testing.T) {
 		t.Logf(renderAsString(&grid))
 		t.Logf("want: %v", want)
 		t.Logf("got: %v", got)
+	}
+}
+
+func TestPath_NoPath(t *testing.T) {
+	grid := NewGrid[int](5, 5)
+	m := []int{
+		0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0,
+		0, 0, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0,
+	}
+	i := 0
+	for y := 0; y < grid.Height; y++ {
+		for x := 0; x < grid.Width; x++ {
+			grid.Set(Vec2{x, y}, m[i])
+			i++
+		}
+	}
+
+	pathfinder := NewPathfinder(grid)
+	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
+
+	if len(got) != 0 {
+		t.Logf(renderAsString(&grid))
+		t.Logf("got: %v", got)
+		t.Fatalf("len want %d got %d", 0, len(got))
 	}
 }
 
