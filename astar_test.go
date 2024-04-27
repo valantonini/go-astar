@@ -74,7 +74,7 @@ func TestGetSuccessors(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			got := getSuccessors(c.pos.X, c.pos.Y, grid.Width, grid.Height)
+			got := getSuccessors(c.pos, grid.Width, grid.Height)
 			if len(got) != len(c.want) {
 				t.Fatalf("len want %d got %d", len(c.want), len(got))
 			}
@@ -104,7 +104,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 	}
 
 	pathfinder := NewPathfinder(grid)
-	got := pathfinder.Find(1, 1, 3, 1)
+	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
 	want := []Vec2{
 		{1, 1},
 		{1, 2},
@@ -146,7 +146,7 @@ func TestPath_NoDiagonal2(t *testing.T) {
 	}
 
 	pathfinder := NewPathfinder(grid)
-	got := pathfinder.Find(1, 1, 6, 2)
+	got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
 	want := []Vec2{
 		{1, 1},
 		{1, 2},

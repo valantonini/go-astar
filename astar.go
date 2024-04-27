@@ -14,20 +14,19 @@ func NewPathfinder(grid Grid) Pathfinder {
 	}
 }
 
-func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
+func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	open := NewMinHeap(p.grid.Width, p.grid.Height)
 	closed := NewMaxGrid(p.grid.Width, p.grid.Height)
 
-	start := Node{
-		Pos:    Vec2{x1, y1},
+	open.Push(Node{
+		Pos:    start,
 		F:      0,
-		Weight: p.grid.Get(Vec2{x1, y1}),
-	}
-	open.Push(start)
+		Weight: p.grid.Get(start),
+	})
 
 	for open.Len() > 0 {
 		q := open.Pop()
-		for _, succ := range getSuccessors(q.Pos.X, q.Pos.Y, p.grid.Width, p.grid.Height) {
+		for _, succ := range getSuccessors(q.Pos, p.grid.Width, p.grid.Height) {
 			// cell is not open
 			if p.grid.Get(succ) != 0 {
 				continue
@@ -40,7 +39,7 @@ func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 			}
 
 			// found
-			if successor.Pos.X == x2 && successor.Pos.Y == y2 {
+			if successor.Pos == end {
 				path := []Vec2{}
 				var n *Node = &successor
 				for n != nil {
@@ -52,7 +51,7 @@ func (p Pathfinder) Find(x1, y1, x2, y2 int) []Vec2 {
 			}
 
 			successor.G = q.G + manhattan(q.Pos, successor.Pos)
-			successor.H = manhattan(successor.Pos, Vec2{x2, y2})
+			successor.H = manhattan(successor.Pos, end)
 			successor.F = successor.G + successor.H
 			successor.Weight = p.grid.Get(successor.Pos)
 
@@ -79,11 +78,11 @@ func abs(x int) int {
 	return x
 }
 
-func getSuccessors(x, y, width, height int) []Vec2 {
+func getSuccessors(vec Vec2, width, height int) []Vec2 {
 	results := make([]Vec2, 0, len(neighbours))
 	for _, n := range neighbours {
-		x := x + n[0]
-		y := y + n[1]
+		x := vec.X + n[0]
+		y := vec.Y + n[1]
 
 		if x < 0 || x >= width || y < 0 || y >= height {
 			continue

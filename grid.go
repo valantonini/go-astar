@@ -16,24 +16,14 @@ var neighbours = [4][2]int{
 type Grid struct {
 	Width  int
 	Height int
-	Cells  []int
-}
-
-func (b *Grid) Set(x, y int, val int) {
-	idx := y*b.Width + x
-	b.Cells[idx] = val
-}
-
-func (b *Grid) Get(v Vec2) int {
-	idx := v.Y*b.Width + v.X
-	return b.Cells[idx]
+	inner  []int
 }
 
 func NewGrid(width, height int) Grid {
 	grid := Grid{
 		Width:  width,
 		Height: height,
-		Cells:  make([]int, width*height),
+		inner:  make([]int, width*height),
 	}
 	return grid
 }
@@ -46,6 +36,16 @@ func NewMaxGrid(width, height int) Grid {
 		}
 	}
 	return grid
+}
+
+func (b *Grid) Set(x, y int, val int) {
+	idx := y*b.Width + x
+	b.inner[idx] = val
+}
+
+func (b *Grid) Get(v Vec2) int {
+	idx := v.Y*b.Width + v.X
+	return b.inner[idx]
 }
 
 func RenderAsString(grid *Grid) string {
