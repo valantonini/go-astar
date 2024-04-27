@@ -8,19 +8,13 @@ import (
 )
 
 func TestGetSuccessors(t *testing.T) {
-	g := []int{
+	w := []int{
 		1, 2, 3,
 		4, 5, 6,
 		7, 8, 9,
 	}
-	grid := NewGrid[int](3, 3)
-	i := 0
-	for y := 0; y < grid.Height; y++ {
-		for x := 0; x < grid.Width; x++ {
-			grid.Set(Vec2{x, y}, g[i])
-			i++
-		}
-	}
+	grid := NewGridFromSlice(3, 3, w)
+
 	cases := []struct {
 		name string
 		pos  Vec2
@@ -90,21 +84,14 @@ func TestGetSuccessors(t *testing.T) {
 }
 
 func TestPath_NoDiagonal1(t *testing.T) {
-	grid := NewGrid[int](5, 5)
-	m := []int{
+	w := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0,
 	}
-	i := 0
-	for y := 0; y < grid.Height; y++ {
-		for x := 0; x < grid.Width; x++ {
-			grid.Set(Vec2{x, y}, m[i])
-			i++
-		}
-	}
+	grid := NewGridFromSlice(5, 5, w)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
@@ -134,21 +121,14 @@ func TestPath_NoDiagonal1(t *testing.T) {
 }
 
 func TestPath_NoPath(t *testing.T) {
-	grid := NewGrid[int](5, 5)
-	m := []int{
+	w := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
 		0, 0, 0, 1, 0,
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0,
 	}
-	i := 0
-	for y := 0; y < grid.Height; y++ {
-		for x := 0; x < grid.Width; x++ {
-			grid.Set(Vec2{x, y}, m[i])
-			i++
-		}
-	}
+	grid := NewGridFromSlice(5, 5, w)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
@@ -161,23 +141,17 @@ func TestPath_NoPath(t *testing.T) {
 }
 
 func TestPath_NoDiagonal2(t *testing.T) {
-	grid := NewGrid[int](8, 4)
-	m := []int{
+	w := []int{
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 1, 0, 1, 1, 1, 0, 0,
 		0, 1, 1, 1, 0, 1, 1, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 	}
-	i := 0
-	for y := 0; y < grid.Height; y++ {
-		for x := 0; x < grid.Width; x++ {
-			grid.Set(Vec2{x, y}, m[i])
-			i++
-		}
-	}
+	grid := NewGridFromSlice(8, 4, w)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
+
 	want := []Vec2{
 		{1, 1},
 		{1, 2},
