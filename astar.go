@@ -41,10 +41,10 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			// found
 			if successor.Pos == end {
 				path := []Vec2{}
-				var n *Node = &successor
-				for n != nil {
-					path = append(path, n.Pos)
-					n = n.Parent
+				var curr *Node = &successor
+				for curr != nil {
+					path = append(path, curr.Pos)
+					curr = curr.Parent
 				}
 				slices.Reverse(path)
 				return path
