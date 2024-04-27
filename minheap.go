@@ -4,7 +4,7 @@ package astar
 type MinHeap struct {
 	width  int
 	height int
-	inner  []Node
+	inner  []node
 }
 
 // NewMinHeap creates a new MinHeap with the given width and height.
@@ -23,7 +23,7 @@ func (h *MinHeap) Len() int {
 }
 
 // Push adds an element to the heap.
-func (h *MinHeap) Push(elem Node) {
+func (h *MinHeap) Push(elem node) {
 	h.inner = append(h.inner, elem)
 	curr := len(h.inner) - 1
 	for {
@@ -43,7 +43,7 @@ func (h *MinHeap) Push(elem Node) {
 
 // Peek returns the element at the top of the heap. If the heap is empty, it
 // will panic.
-func (h *MinHeap) Peek() Node {
+func (h *MinHeap) Peek() node {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
@@ -52,7 +52,7 @@ func (h *MinHeap) Peek() Node {
 
 // Pop removes and returns the element at the top of the heap. If the heap is
 // empty,it will panic.
-func (h *MinHeap) Pop() (result Node) {
+func (h *MinHeap) Pop() (result node) {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}

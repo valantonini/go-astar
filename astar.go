@@ -25,7 +25,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	open := NewMinHeap(p.weights.Width, p.weights.Height)
 	searchSpace := newSearchSpace(p.weights)
 
-	origin := Node{
+	origin := node{
 		Pos:    start,
 		F:      0,
 		Weight: p.weights.Get(start),
@@ -42,7 +42,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 				continue
 			}
 
-			successor := Node{
+			successor := node{
 				Pos:    Vec2{succ.X, succ.Y},
 				Weight: p.weights.Get(succ),
 				Parent: &q,
@@ -52,7 +52,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			// found
 			if successor.Pos == end {
 				path := []Vec2{}
-				var curr *Node = &successor
+				var curr *node = &successor
 				for curr != nil {
 					path = append(path, curr.Pos)
 					curr = curr.Parent
@@ -121,11 +121,11 @@ func getSuccessors(vec Vec2, width, height int) []Vec2 {
 	return results
 }
 
-func newSearchSpace(weights Grid[int]) Grid[Node] {
-	g := NewGrid[Node](weights.Width, weights.Height)
+func newSearchSpace(weights Grid[int]) Grid[node] {
+	g := NewGrid[node](weights.Width, weights.Height)
 	for x := range weights.Width {
 		for y := range weights.Height {
-			c := Node{
+			c := node{
 				Pos:    Vec2{x, y},
 				Weight: weights.Get(Vec2{x, y}),
 				F:      math.MaxInt,

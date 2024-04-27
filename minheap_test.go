@@ -23,7 +23,7 @@ func TestMinHeap_Peek(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			heap := &MinHeap{}
 			for _, n := range c.data {
-				heap.Push(Node{F: n})
+				heap.Push(node{F: n})
 			}
 
 			want := make([]int, len(c.data))
@@ -57,7 +57,7 @@ func TestMinHeap_Pop(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			heap := &MinHeap{}
 			for _, n := range c.data {
-				heap.Push(Node{F: n})
+				heap.Push(node{F: n})
 			}
 
 			want := make([]int, len(c.data))
