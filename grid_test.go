@@ -11,7 +11,7 @@ func TestGrid(t *testing.T) {
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			i++
-			board.Set(x, y, i)
+			board.Set(Vec2{x, y}, i)
 		}
 	}
 

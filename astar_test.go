@@ -2,6 +2,8 @@ package main
 
 import (
 	"reflect"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -15,7 +17,7 @@ func TestGetSuccessors(t *testing.T) {
 	i := 0
 	for y := 0; y < grid.Height; y++ {
 		for x := 0; x < grid.Width; x++ {
-			grid.Set(x, y, g[i])
+			grid.Set(Vec2{x, y}, g[i])
 			i++
 		}
 	}
@@ -98,7 +100,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 	i := 0
 	for y := 0; y < grid.Height; y++ {
 		for x := 0; x < grid.Width; x++ {
-			grid.Set(x, y, m[i])
+			grid.Set(Vec2{x, y}, m[i])
 			i++
 		}
 	}
@@ -124,11 +126,12 @@ func TestPath_NoDiagonal1(t *testing.T) {
 		}
 	}
 	if t.Failed() {
-		t.Logf(RenderAsString(&grid))
+		t.Logf(renderAsString(&grid))
 		t.Logf("want: %v", want)
 		t.Logf("got: %v", got)
 	}
 }
+
 func TestPath_NoDiagonal2(t *testing.T) {
 	grid := NewGrid[int](8, 4)
 	m := []int{
@@ -140,7 +143,7 @@ func TestPath_NoDiagonal2(t *testing.T) {
 	i := 0
 	for y := 0; y < grid.Height; y++ {
 		for x := 0; x < grid.Width; x++ {
-			grid.Set(x, y, m[i])
+			grid.Set(Vec2{x, y}, m[i])
 			i++
 		}
 	}
@@ -168,8 +171,28 @@ func TestPath_NoDiagonal2(t *testing.T) {
 		}
 	}
 	if t.Failed() {
-		t.Log(RenderAsString(&grid))
+		t.Log(renderAsString(&grid))
 		t.Logf("want: %v", want)
 		t.Logf("got: %v", got)
 	}
+}
+
+func renderAsString(grid *Grid[int]) string {
+	sb := &strings.Builder{}
+	sb.WriteString("\n")
+	for y := range grid.Height {
+		for x := range grid.Width {
+			val := grid.Get(Vec2{x, y})
+			switch val {
+			case 0:
+				sb.WriteString(".")
+				break
+			default:
+				sb.WriteString(strconv.Itoa(val))
+				break
+			}
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }

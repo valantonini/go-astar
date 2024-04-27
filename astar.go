@@ -1,41 +1,46 @@
 package main
 
 import (
+	"math"
 	"slices"
 )
 
 type Pathfinder struct {
-	grid Grid[int]
+	weights Grid[int]
 }
 
-func NewPathfinder(grid Grid[int]) Pathfinder {
+func NewPathfinder(weights Grid[int]) Pathfinder {
 	return Pathfinder{
-		grid: grid,
+		weights: weights,
 	}
 }
 
 func (p Pathfinder) Find(start, end Vec2) []Vec2 {
-	open := NewMinHeap(p.grid.Width, p.grid.Height)
-	closed := NewMaxGrid(p.grid.Width, p.grid.Height)
+	open := NewMinHeap(p.weights.Width, p.weights.Height)
+	searchSpace := newSearchSpace(p.weights)
 
-	open.Push(Node{
+	origin := Node{
 		Pos:    start,
 		F:      0,
-		Weight: p.grid.Get(start),
-	})
+		Weight: p.weights.Get(start),
+		Open:   true,
+	}
+	open.Push(origin)
+	searchSpace.Set(origin.Pos, origin)
 
 	for open.Len() > 0 {
 		q := open.Pop()
-		for _, succ := range getSuccessors(q.Pos, p.grid.Width, p.grid.Height) {
+		for _, succ := range getSuccessors(q.Pos, p.weights.Width, p.weights.Height) {
 			// cell is not open
-			if p.grid.Get(succ) != 0 {
+			if p.weights.Get(succ) != 0 {
 				continue
 			}
 
 			successor := Node{
 				Pos:    Vec2{succ.X, succ.Y},
-				Weight: p.grid.Get(succ),
+				Weight: p.weights.Get(succ),
 				Parent: &q,
+				Open:   true,
 			}
 
 			// found
@@ -53,16 +58,22 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			successor.G = q.G + manhattan(q.Pos, successor.Pos)
 			successor.H = manhattan(successor.Pos, end)
 			successor.F = successor.G + successor.H
-			successor.Weight = p.grid.Get(successor.Pos)
+			successor.Weight = p.weights.Get(successor.Pos)
 
-			// already found better
-			if closed.Get(successor.Pos) < successor.F {
+			ss := searchSpace.Get(successor.Pos)
+			if ss.Open && ss.F < successor.F {
 				continue
 			}
 
+			// already found better
+			if ss.Closed && ss.F < successor.F {
+				continue
+			}
+			searchSpace.Set(successor.Pos, successor)
 			open.Push(successor)
 		}
-		closed.Set(q.Pos.X, q.Pos.Y, q.F)
+		s := searchSpace.Get(q.Pos)
+		s.Closed = true
 	}
 	return []Vec2{}
 }
@@ -91,4 +102,19 @@ func getSuccessors(vec Vec2, width, height int) []Vec2 {
 		results = append(results, n)
 	}
 	return results
+}
+
+func newSearchSpace(weights Grid[int]) Grid[Node] {
+	g := NewGrid[Node](weights.Width, weights.Height)
+	for x := range weights.Width {
+		for y := range weights.Height {
+			c := Node{
+				Pos:    Vec2{x, y},
+				Weight: weights.Get(Vec2{x, y}),
+				F:      math.MaxInt,
+			}
+			g.Set(Vec2{x, y}, c)
+		}
+	}
+	return g
 }

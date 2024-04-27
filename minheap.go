@@ -12,6 +12,8 @@ type Node struct {
 	Parent *Node
 	G      int
 	H      int
+	Open   bool
+	Closed bool
 }
 
 type MinHeap struct {
