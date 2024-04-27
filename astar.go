@@ -121,8 +121,7 @@ func getSuccessors(vec Vec2, width, height int) []Vec2 {
 		if x < 0 || x >= width || y < 0 || y >= height {
 			continue
 		}
-		v := Vec2{x, y}
-		results = append(results, v)
+		results = append(results, Vec2{x, y})
 	}
 	return results
 }
@@ -137,7 +136,7 @@ func newSearchSpace(weights Grid[int]) Grid[node] {
 				weight: weights.Get(Vec2{x, y}),
 				f:      math.MaxInt,
 			}
-			grid.Set(Vec2{x, y}, node)
+			grid.Set(node.pos, node)
 		}
 	}
 	return grid

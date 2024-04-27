@@ -33,8 +33,8 @@ func (h *minHeap) push(elem node) {
 
 		parent := (curr - 1) / 2
 
-		// parent is greater or equal, heap property satisfied
-		if h.inner[curr].f >= h.inner[parent].f {
+		// min heap property satisfied
+		if h.inner[parent].f <= h.inner[curr].f {
 			break
 		}
 
