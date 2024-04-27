@@ -1,27 +1,13 @@
 package astar
 
-type Vec2 struct {
-	X int
-	Y int
-}
-
-type Node struct {
-	F      int
-	Pos    Vec2
-	Weight int
-	Parent *Node
-	G      int
-	H      int
-	Open   bool
-	Closed bool
-}
-
+// MinHeap is a simple min heap implementation.
 type MinHeap struct {
 	width  int
 	height int
 	inner  []Node
 }
 
+// NewMinHeap creates a new MinHeap with the given width and height.
 func NewMinHeap(width, height int) *MinHeap {
 	heap := &MinHeap{
 		width:  width,
@@ -31,10 +17,12 @@ func NewMinHeap(width, height int) *MinHeap {
 	return heap
 }
 
+// Len returns the number of elements in the heap.
 func (h *MinHeap) Len() int {
 	return len(h.inner)
 }
 
+// Push adds an element to the heap.
 func (h *MinHeap) Push(elem Node) {
 	h.inner = append(h.inner, elem)
 	curr := len(h.inner) - 1
@@ -53,6 +41,8 @@ func (h *MinHeap) Push(elem Node) {
 	}
 }
 
+// Peek returns the element at the top of the heap. If the heap is empty, it
+// will panic.
 func (h *MinHeap) Peek() Node {
 	if len(h.inner) == 0 {
 		panic("heap empty")
@@ -60,6 +50,8 @@ func (h *MinHeap) Peek() Node {
 	return h.inner[0]
 }
 
+// Pop removes and returns the element at the top of the heap. If the heap is
+// empty,it will panic.
 func (h *MinHeap) Pop() (result Node) {
 	if len(h.inner) == 0 {
 		panic("heap empty")
@@ -73,10 +65,11 @@ func (h *MinHeap) Pop() (result Node) {
 
 	p := 0
 	for {
-		pn := p
+		pn := p // copy p
 		left := 2*p + 1
 		right := 2*p + 2
 
+		// choose the smallest child for p
 		if len(h.inner) > left && h.inner[left].F < h.inner[p].F {
 			p = left
 		}
@@ -85,6 +78,7 @@ func (h *MinHeap) Pop() (result Node) {
 			p = right
 		}
 
+		// no smaller child existed, heap property is satisfied
 		if p == pn {
 			break
 		}

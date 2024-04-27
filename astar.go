@@ -5,16 +5,22 @@ import (
 	"slices"
 )
 
+// Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
 	weights Grid[int]
 }
 
+// NewPathfinder creates a new Pathfinder with the given weights. The weights
+// are used to determine the cost of traversing a cell. A weight of 0 means the
+// cell is not traversable. A weight of 1 or higher means the cell is
+// traversable.
 func NewPathfinder(weights Grid[int]) Pathfinder {
 	return Pathfinder{
 		weights: weights,
 	}
 }
 
+// Find returns a path from start to end. If no path is found, an empty slice.
 func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	open := NewMinHeap(p.weights.Width, p.weights.Height)
 	searchSpace := newSearchSpace(p.weights)
