@@ -1,12 +1,5 @@
 package main
 
-var neighbours = [4][2]int{
-	{0, -1}, // Up
-	{1, 0},  // Right
-	{0, 1},  // Down
-	{-1, 0}, // Left
-}
-
 type Grid[T any] struct {
 	Width  int
 	Height int

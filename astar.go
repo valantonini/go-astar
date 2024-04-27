@@ -31,7 +31,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	for open.Len() > 0 {
 		q := open.Pop()
 		for _, succ := range getSuccessors(q.Pos, p.weights.Width, p.weights.Height) {
-			// cell is not open
+			// cell is not traversable
 			if p.weights.Get(succ) != 0 {
 				continue
 			}
@@ -61,17 +61,21 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			successor.Weight = p.weights.Get(successor.Pos)
 
 			ss := searchSpace.Get(successor.Pos)
+
+			// better node with same position in open list
 			if ss.Open && ss.F < successor.F {
 				continue
 			}
 
-			// already found better
+			// better node with same position in closed list
 			if ss.Closed && ss.F < successor.F {
 				continue
 			}
+
 			searchSpace.Set(successor.Pos, successor)
 			open.Push(successor)
 		}
+
 		s := searchSpace.Get(q.Pos)
 		s.Closed = true
 	}
@@ -87,6 +91,13 @@ func abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+var neighbours = [4][2]int{
+	{0, -1}, // Up
+	{1, 0},  // Right
+	{0, 1},  // Down
+	{-1, 0}, // Left
 }
 
 func getSuccessors(vec Vec2, width, height int) []Vec2 {
