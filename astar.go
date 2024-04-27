@@ -84,6 +84,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 
 		s := searchSpace.Get(q.pos)
 		s.closed = true
+		searchSpace.Set(s.pos, s)
 	}
 	return []Vec2{}
 }
