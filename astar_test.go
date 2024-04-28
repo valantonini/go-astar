@@ -250,3 +250,39 @@ func renderWithPathAsString(grid *Grid[int], path []Vec2) string {
 	}
 	return sb.String()
 }
+
+func TestPath_Diagonal1(t *testing.T) {
+	w := []int{
+		0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0,
+	}
+	grid := NewGridFromSlice(5, 5, w)
+
+	pathfinder := NewDiagonalPathfinder(grid)
+	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
+
+	want := []Vec2{
+		{1, 1},
+		{1, 2},
+		{2, 3},
+		{3, 2},
+		{3, 1},
+	}
+	if len(got) != len(want) {
+		t.Logf("got: %v", got)
+		t.Fatalf("len want %d got %d", len(want), len(got))
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
+		}
+	}
+	if t.Failed() {
+		t.Logf(renderAsString(&grid))
+		t.Logf("want: %v", want)
+		t.Logf("got: %v", got)
+	}
+}

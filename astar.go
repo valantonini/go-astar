@@ -1,8 +1,45 @@
 package astar
 
 import (
+	"math"
 	"slices"
 )
+
+// cardinalSuccessors are the offsets for the 4 cardinal directions.
+var cardinalSuccessors = []Vec2{
+	{0, -1}, // Up
+	{1, 0},  // Right
+	{0, 1},  // Down
+	{-1, 0}, // Left
+}
+
+// diagonalSuccessors are the offsets for the 8 cardinal and diagonal
+// directions.
+var diagonalSuccessors = []Vec2{
+	{0, -1},  // Up
+	{1, -1},  // Up-Right
+	{1, 0},   // Right
+	{1, 1},   // Right-Down
+	{0, 1},   // Down
+	{-1, 1},  // Down-Left
+	{-1, 0},  // Left
+	{-1, -1}, // Up-Left
+}
+
+// distanceHeuristic is a function that calculates the distance between two vectors.
+type distanceHeuristic func(Vec2, Vec2) int
+
+// node is a node in the search space.
+type node struct {
+	pos    Vec2  // Position
+	parent *node // Parent node
+	g      int   // Cost from start node
+	h      int   // Heuristic cost to end node
+	f      int   // F = G + H
+	weight int   // Weight of the node (0 = impassable)
+	open   bool  // In open list
+	closed bool  // In closed list
+}
 
 // Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
@@ -20,6 +57,9 @@ func NewPathfinder(weights Grid[int]) Pathfinder {
 	}
 }
 
+// NewDiagonalPathfinder creates a new Pathfinder with the given weights that
+// supports diagonal movement. A weight of 0 means the cell is not traversable.
+// A weight of 1 or higher means the cell is traversable.
 func NewDiagonalPathfinder(weights Grid[int]) Pathfinder {
 	return Pathfinder{
 		weights:   weights,
@@ -34,6 +74,12 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 	if p.diagonals {
 		offsets = diagonalSuccessors
 	}
+
+	heuristic := manhattan
+	if p.diagonals {
+		heuristic = diagonalDistance
+	}
+
 	searchSpace := newSearchSpace(p.weights)                  // tracks the open, closed and f values of each node
 	open := newMinHeap(searchSpace.Width, searchSpace.Height) // prioritised queue of f
 
@@ -56,8 +102,8 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 			}
 
 			successor.parent = &q
-			successor.g = q.g + manhattan(qPos, succPos)
-			successor.h = manhattan(succPos, endPos)
+			successor.g = q.g + heuristic(qPos, succPos)
+			successor.h = heuristic(succPos, endPos)
 			successor.f = successor.g + successor.h
 			successor.open = true
 
@@ -101,6 +147,19 @@ func manhattan(v1, v2 Vec2) int {
 	return abs(v1.X-v2.X) + abs(v1.Y-v2.Y)
 }
 
+// diagonalDistance calculates the diagonal distance between two vectors.
+func diagonalDistance(v1, v2 Vec2) int {
+	// node length
+	const nodeLength = 1
+	// node diagonal distance
+	var diagonalDistanceBetweenNode = math.Sqrt(2)
+
+	dx := abs(v1.X - v2.X)
+	dy := abs(v1.Y - v2.Y)
+	h := float64(nodeLength*(dx+dy)) + (diagonalDistanceBetweenNode-2*nodeLength)*float64(min(dx, dy))
+	return int(h)
+}
+
 // abs returns the absolute value of x.
 func abs(x int) int {
 	if x < 0 {
@@ -109,22 +168,12 @@ func abs(x int) int {
 	return x
 }
 
-var cardinalSuccessors = []Vec2{
-	{0, -1}, // Up
-	{1, 0},  // Right
-	{0, 1},  // Down
-	{-1, 0}, // Left
-}
-
-var diagonalSuccessors = []Vec2{
-	{0, -1},  // Up
-	{1, -1},  // Up-Right
-	{1, 0},   // Right
-	{1, 1},   // Right-Down
-	{0, 1},   // Down
-	{-1, 1},  // Down-Left
-	{-1, 0},  // Left
-	{-1, -1}, // Up-Left
+// min returns the minimum of x1 and x2.
+func min(x1, x2 int) int {
+	if x1 < x2 {
+		return x1
+	}
+	return x2
 }
 
 // getSuccessors returns the successors of a vector. If a successor is outside
@@ -141,18 +190,6 @@ func getSuccessors(vec Vec2, width, height int, offsets []Vec2) []Vec2 {
 		results = append(results, Vec2{x, y})
 	}
 	return results
-}
-
-// node is a node in the search space.
-type node struct {
-	pos    Vec2  // Position
-	parent *node // Parent node
-	g      int   // Cost from start node
-	h      int   // Heuristic cost to end node
-	f      int   // F = G + H
-	weight int   // Weight of the node (0 = impassable)
-	open   bool  // In open list
-	closed bool  // In closed list
 }
 
 // newSearchSpace creates a new search space from the given weights.

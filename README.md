@@ -31,8 +31,6 @@ want := []Vec2{
 ```
 
 To Do:
-- diagonals
-- different heuristic calcs
 - punish change direction
 
 see [my c# implementation](https://github.com/valantonini/AStar)
