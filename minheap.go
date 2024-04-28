@@ -1,11 +1,12 @@
 package astar
 
+// heapNode is a node in the min heap.
 type heapNode struct {
-	f   int
 	pos Vec2
+	f   int
 }
 
-// minHeap is a specialized min heap that orders heapNodes by their F value.
+// minHeap is a specialized 2d min heap that orders heapNodes by their f value.
 type minHeap struct {
 	width  int
 	height int

@@ -24,12 +24,9 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	open := newMinHeap(p.weights.Width, p.weights.Height)
 	searchSpace := newSearchSpace(p.weights) // tracks the open, closed and f values of each node
 
-	origin := node{
-		pos:    start,
-		f:      0,
-		weight: p.weights.Get(start),
-		open:   true,
-	}
+	origin := searchSpace.Get(start)
+	origin.f = 0
+
 	open.push(heapNode{pos: start})
 	searchSpace.Set(start, origin)
 
@@ -39,7 +36,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 		for _, succPos := range getSuccessors(qPos, searchSpace.Width, searchSpace.Height) {
 			successor := searchSpace.Get(succPos)
 
-			// cell is not traversable
+			// not traversable
 			if successor.weight == 0 {
 				continue
 			}
@@ -62,15 +59,12 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 				return path
 			}
 
-			// current successor
 			existingSuccessor := searchSpace.Get(succPos)
 
-			// better successor with same position in open list
 			if existingSuccessor.open && existingSuccessor.f < successor.f {
 				continue
 			}
 
-			// better successor with same position in closed list
 			if existingSuccessor.closed && existingSuccessor.f < successor.f {
 				continue
 			}
