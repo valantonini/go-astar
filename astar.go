@@ -24,33 +24,34 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 	open := newMinHeap(p.weights.Width, p.weights.Height)
 	searchSpace := newSearchSpace(p.weights) // tracks the open, closed and f values of each node
 
-	st := node{
+	origin := node{
 		pos:    start,
 		f:      0,
 		weight: p.weights.Get(start),
 		open:   true,
 	}
 	open.push(heapNode{pos: start})
-	searchSpace.Set(start, st)
+	searchSpace.Set(start, origin)
 
 	for open.len() > 0 {
 		qPos := open.pop().pos
 		q := searchSpace.Get(qPos)
-		for _, succ := range getSuccessors(qPos, p.weights.Width, p.weights.Height) {
+		for _, succPos := range getSuccessors(qPos, searchSpace.Width, searchSpace.Height) {
+			successor := searchSpace.Get(succPos)
+
 			// cell is not traversable
-			if p.weights.Get(succ) == 0 {
+			if successor.weight == 0 {
 				continue
 			}
 
-			successor := node{
-				pos:    succ,
-				weight: p.weights.Get(succ),
-				parent: &q,
-				open:   true,
-			}
+			successor.parent = &q
+			successor.g = q.g + manhattan(qPos, successor.pos)
+			successor.h = manhattan(succPos, end)
+			successor.f = successor.g + successor.h
+			successor.open = true
 
 			// found
-			if successor.pos == end {
+			if succPos == end {
 				path := []Vec2{}
 				var curr *node = &successor
 				for curr != nil {
@@ -61,27 +62,22 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 				return path
 			}
 
-			successor.g = q.g + manhattan(qPos, successor.pos)
-			successor.h = manhattan(succ, end)
-			successor.f = successor.g + successor.h
-			successor.weight = p.weights.Get(succ)
+			// current successor
+			existingSuccessor := searchSpace.Get(succPos)
 
-			ss := searchSpace.Get(succ)
-
-			// better node with same position in open list
-			if ss.open && ss.f < successor.f {
+			// better successor with same position in open list
+			if existingSuccessor.open && existingSuccessor.f < successor.f {
 				continue
 			}
 
-			// better node with same position in closed list
-			if ss.closed && ss.f < successor.f {
+			// better successor with same position in closed list
+			if existingSuccessor.closed && existingSuccessor.f < successor.f {
 				continue
 			}
 
-			searchSpace.Set(succ, successor)
-			open.push(heapNode{pos: succ, f: successor.f})
+			searchSpace.Set(succPos, successor)
+			open.push(heapNode{pos: succPos, f: successor.f})
 		}
-
 		q.closed = true
 		searchSpace.Set(qPos, q)
 	}
