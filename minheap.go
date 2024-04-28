@@ -67,7 +67,7 @@ func (h *minHeap) pop() (result heapNode) {
 
 	result = h.inner[0]
 
-	// arbitrarily choose last item has head
+	// arbitrarily choose last item as head
 	h.inner[0] = h.inner[len(h.inner)-1]
 	h.inner = h.inner[:len(h.inner)-1]
 
