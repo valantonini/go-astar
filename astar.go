@@ -42,7 +42,7 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			}
 
 			successor.parent = &q
-			successor.g = q.g + manhattan(qPos, successor.pos)
+			successor.g = q.g + manhattan(qPos, succPos)
 			successor.h = manhattan(succPos, end)
 			successor.f = successor.g + successor.h
 			successor.open = true
