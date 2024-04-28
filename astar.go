@@ -1,7 +1,6 @@
 package astar
 
 import (
-	"math"
 	"slices"
 )
 
@@ -135,7 +134,6 @@ func newSearchSpace(weights Grid[int]) Grid[node] {
 			node := node{
 				pos:    Vec2{x, y},
 				weight: weights.Get(Vec2{x, y}),
-				f:      math.MaxInt,
 			}
 			grid.Set(node.pos, node)
 		}
