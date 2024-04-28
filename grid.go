@@ -19,9 +19,9 @@ func NewGrid[T any](width, height int) Grid[T] {
 
 // NewGridFromSlice creates a new grid with the given width and height and
 // fills it with the given slice.
-func NewGridFromSlice[T any](width, height int, weights []T) Grid[T] {
+func NewGridFromSlice[T any](width, height int, values []T) Grid[T] {
 	inner := make([]T, width*height)
-	copy(inner, weights)
+	copy(inner, values)
 
 	grid := Grid[T]{
 		Width:  width,

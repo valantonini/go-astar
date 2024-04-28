@@ -19,16 +19,18 @@ func NewPathfinder(weights Grid[int]) Pathfinder {
 	}
 }
 
-// Find returns a path from start to end. If no path is found, an empty slice.
-func (p Pathfinder) Find(start, end Vec2) []Vec2 {
-	open := newMinHeap(p.weights.Width, p.weights.Height)
-	searchSpace := newSearchSpace(p.weights) // tracks the open, closed and f values of each node
+// Find returns a path from start to end. If no path is found, an empty slice
+// is returned.
+func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
+	searchSpace := newSearchSpace(p.weights)                  // tracks the open, closed and f values of each node
+	open := newMinHeap(searchSpace.Width, searchSpace.Height) // prioritised queue of f
 
-	origin := searchSpace.Get(start)
-	origin.f = 0
+	start := searchSpace.Get(startPos)
+	start.f = 0
+	start.open = true
 
-	open.push(heapNode{pos: start})
-	searchSpace.Set(start, origin)
+	open.push(heapNode{pos: startPos, f: start.f})
+	searchSpace.Set(startPos, start)
 
 	for open.len() > 0 {
 		qPos := open.pop().pos
@@ -43,12 +45,12 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 
 			successor.parent = &q
 			successor.g = q.g + manhattan(qPos, succPos)
-			successor.h = manhattan(succPos, end)
+			successor.h = manhattan(succPos, endPos)
 			successor.f = successor.g + successor.h
 			successor.open = true
 
 			// found
-			if succPos == end {
+			if succPos == endPos {
 				path := []Vec2{}
 				var curr *node = &successor
 				for curr != nil {
@@ -59,12 +61,11 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 				return path
 			}
 
+			// check if more optimal path to successor was already encountered
 			existingSuccessor := searchSpace.Get(succPos)
-
 			if existingSuccessor.open && existingSuccessor.f < successor.f {
 				continue
 			}
-
 			if existingSuccessor.closed && existingSuccessor.f < successor.f {
 				continue
 			}
@@ -72,9 +73,12 @@ func (p Pathfinder) Find(start, end Vec2) []Vec2 {
 			searchSpace.Set(succPos, successor)
 			open.push(heapNode{pos: succPos, f: successor.f})
 		}
+
 		q.closed = true
 		searchSpace.Set(qPos, q)
 	}
+
+	// not found
 	return []Vec2{}
 }
 
