@@ -103,14 +103,7 @@ func TestGetSuccessors_Diagonal(t *testing.T) {
 		{0, 1},
 		{0, 0},
 	}
-	if len(got) != len(want) {
-		t.Fatalf("len want %d got %d", len(want), len(got))
-	}
-	for i := range want {
-		if !reflect.DeepEqual(got[i], want[i]) {
-			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
-		}
-	}
+	equal(t, got, want, &grid)
 }
 
 func TestPath_NoDiagonal1(t *testing.T) {
@@ -125,6 +118,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
+
 	want := []Vec2{
 		{1, 1},
 		{1, 2},
@@ -134,20 +128,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 		{3, 2},
 		{3, 1},
 	}
-	if len(got) != len(want) {
-		t.Logf("got: %v", got)
-		t.Fatalf("len want %d got %d", len(want), len(got))
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
-		}
-	}
-	if t.Failed() {
-		t.Logf(renderAsString(&grid))
-		t.Logf("want: %v", want)
-		t.Logf("got: %v", got)
-	}
+	equal(t, got, want, &grid)
 }
 
 func TestPath_NoPath(t *testing.T) {
@@ -164,7 +145,7 @@ func TestPath_NoPath(t *testing.T) {
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
 
 	if len(got) != 0 {
-		t.Logf(renderAsString(&grid))
+		t.Logf(renderWithPathAsString(&grid, got))
 		t.Logf("got: %v", got)
 		t.Fatalf("len want %d got %d", 0, len(got))
 	}
@@ -193,62 +174,7 @@ func TestPath_NoDiagonal2(t *testing.T) {
 		{5, 2},
 		{6, 2},
 	}
-	if len(got) != len(want) {
-		t.Logf("got: %v", got)
-		t.Fatalf("len want %d got %d", len(want), len(got))
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
-		}
-	}
-	if t.Failed() {
-		t.Log(renderAsString(&grid))
-		t.Logf("want: %v", want)
-		t.Logf("got: %v", got)
-	}
-}
-
-func renderAsString(grid *Grid[int]) string {
-	sb := &strings.Builder{}
-	sb.WriteString("\n")
-	for y := range grid.Height {
-		for x := range grid.Width {
-			val := grid.Get(Vec2{x, y})
-			switch val {
-			case 0:
-				sb.WriteRune('\u2588') // block █
-			default:
-				sb.WriteString(strconv.Itoa(val))
-			}
-		}
-		sb.WriteString("\n")
-	}
-	return sb.String()
-}
-
-func renderWithPathAsString(grid *Grid[int], path []Vec2) string {
-	sb := &strings.Builder{}
-	sb.WriteString("\n")
-	for y := range grid.Height {
-		for x := range grid.Width {
-			val := grid.Get(Vec2{x, y})
-
-			if slices.Contains(path, Vec2{x, y}) {
-				sb.WriteRune('\u25e6')
-				continue
-			}
-
-			switch val {
-			case 0:
-				sb.WriteRune('\u2588') // block █
-			default:
-				sb.WriteString(strconv.Itoa(val))
-			}
-		}
-		sb.WriteString("\n")
-	}
-	return sb.String()
+	equal(t, got, want, &grid)
 }
 
 func TestPath_Diagonal1(t *testing.T) {
@@ -271,18 +197,75 @@ func TestPath_Diagonal1(t *testing.T) {
 		{3, 2},
 		{3, 1},
 	}
+	equal(t, got, want, &grid)
+}
+
+func equal(t *testing.T, got, want []Vec2, grid *Grid[int]) {
+	t.Helper()
+
 	if len(got) != len(want) {
-		t.Logf("got: %v", got)
-		t.Fatalf("len want %d got %d", len(want), len(got))
+		t.Errorf("len want %d got %d", len(want), len(got))
 	}
+
 	for i := range want {
+		if i >= len(got) {
+			break
+		}
 		if got[i] != want[i] {
 			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
 		}
 	}
 	if t.Failed() {
-		t.Logf(renderAsString(&grid))
 		t.Logf("want: %v", want)
+		t.Logf(renderWithPathAsString(grid, want))
 		t.Logf("got: %v", got)
+		t.Logf(renderWithPathAsString(grid, got))
 	}
+}
+
+var _ = renderAsString // suppress unused
+
+// renderAsString returns a string representation of the grid.
+func renderAsString(grid *Grid[int]) string {
+	sb := &strings.Builder{}
+	sb.WriteString("\n")
+	for y := range grid.Height {
+		for x := range grid.Width {
+			val := grid.Get(Vec2{x, y})
+			switch val {
+			case 0:
+				sb.WriteRune('\u2588') // block █
+			default:
+				sb.WriteString(strconv.Itoa(val))
+			}
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
+}
+
+// renderWithPathAsString returns a string representation of the grid with the
+// path drawn.
+func renderWithPathAsString(grid *Grid[int], path []Vec2) string {
+	sb := &strings.Builder{}
+	sb.WriteString("\n")
+	for y := range grid.Height {
+		for x := range grid.Width {
+			val := grid.Get(Vec2{x, y})
+
+			if slices.Contains(path, Vec2{x, y}) {
+				sb.WriteRune('\u25e6')
+				continue
+			}
+
+			switch val {
+			case 0:
+				sb.WriteRune('\u2588') // block █
+			default:
+				sb.WriteString(strconv.Itoa(val))
+			}
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }

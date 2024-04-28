@@ -26,8 +26,12 @@ var diagonalSuccessors = []Vec2{
 	{-1, -1}, // Up-Left
 }
 
-// distanceHeuristic is a function that calculates the distance between two vectors.
-type distanceHeuristic func(Vec2, Vec2) int
+// heuristicFunc is a function that calculates the distance between two vectors.
+type heuristicFunc func(Vec2, Vec2) int
+
+// getSuccessorsFunc is a function that returns the successors of a vector for
+// a given search space.
+type getSuccessorsFunc func(v Vec2) []Vec2
 
 // node is a node in the search space.
 type node struct {
@@ -43,8 +47,9 @@ type node struct {
 
 // Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
-	weights   Grid[int]
-	diagonals bool
+	weights       Grid[int]
+	heuristic     heuristicFunc
+	getSuccessors getSuccessorsFunc
 }
 
 // NewPathfinder creates a new Pathfinder with the given weights. The weights
@@ -53,7 +58,11 @@ type Pathfinder struct {
 // traversable.
 func NewPathfinder(weights Grid[int]) Pathfinder {
 	return Pathfinder{
-		weights: weights,
+		weights:   weights,
+		heuristic: manhattan,
+		getSuccessors: func(v Vec2) []Vec2 {
+			return getSuccessors(v, weights.Width, weights.Height, cardinalSuccessors)
+		},
 	}
 }
 
@@ -63,23 +72,16 @@ func NewPathfinder(weights Grid[int]) Pathfinder {
 func NewDiagonalPathfinder(weights Grid[int]) Pathfinder {
 	return Pathfinder{
 		weights:   weights,
-		diagonals: true,
+		heuristic: diagonalDistance,
+		getSuccessors: func(v Vec2) []Vec2 {
+			return getSuccessors(v, weights.Width, weights.Height, diagonalSuccessors)
+		},
 	}
 }
 
 // Find returns a path from start to end. If no path is found, an empty slice
 // is returned.
 func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
-	offsets := cardinalSuccessors
-	if p.diagonals {
-		offsets = diagonalSuccessors
-	}
-
-	heuristic := manhattan
-	if p.diagonals {
-		heuristic = diagonalDistance
-	}
-
 	searchSpace := newSearchSpace(p.weights)                  // tracks the open, closed and f values of each node
 	open := newMinHeap(searchSpace.Width, searchSpace.Height) // prioritised queue of f
 
@@ -93,7 +95,7 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 	for open.len() > 0 {
 		qPos := open.pop().pos
 		q := searchSpace.Get(qPos)
-		for _, succPos := range getSuccessors(qPos, searchSpace.Width, searchSpace.Height, offsets) {
+		for _, succPos := range p.getSuccessors(qPos) {
 			successor := searchSpace.Get(succPos)
 
 			// not traversable
@@ -102,8 +104,8 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 			}
 
 			successor.parent = &q
-			successor.g = q.g + heuristic(qPos, succPos)
-			successor.h = heuristic(succPos, endPos)
+			successor.g = q.g + p.heuristic(qPos, succPos)
+			successor.h = p.heuristic(succPos, endPos)
 			successor.f = successor.g + successor.h
 			successor.open = true
 
