@@ -1,10 +1,15 @@
 package astar
 
-// minHeap is a specialized min heap that orders nodes by their F value.
+type heapNode struct {
+	f   int
+	pos Vec2
+}
+
+// minHeap is a specialized min heap that orders heapNodes by their F value.
 type minHeap struct {
 	width  int
 	height int
-	inner  []node
+	inner  []heapNode
 }
 
 // newMinHeap creates a new MinHeap with the given width and height.
@@ -23,7 +28,7 @@ func (h *minHeap) len() int {
 }
 
 // push adds an element to the heap.
-func (h *minHeap) push(elem node) {
+func (h *minHeap) push(elem heapNode) {
 	h.inner = append(h.inner, elem)
 	curr := len(h.inner) - 1
 	for {
@@ -45,7 +50,7 @@ func (h *minHeap) push(elem node) {
 
 // peek returns the element at the top of the heap. If the heap is empty, it
 // will panic.
-func (h *minHeap) peek() node {
+func (h *minHeap) peek() heapNode {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
@@ -54,7 +59,7 @@ func (h *minHeap) peek() node {
 
 // pop removes and returns the element at the top of the heap. If the heap is
 // empty,it will panic.
-func (h *minHeap) pop() (result node) {
+func (h *minHeap) pop() (result heapNode) {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
