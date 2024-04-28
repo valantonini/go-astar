@@ -6,7 +6,8 @@ import (
 
 // Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
-	weights Grid[int]
+	weights   Grid[int]
+	diagonals bool
 }
 
 // NewPathfinder creates a new Pathfinder with the given weights. The weights
@@ -19,9 +20,20 @@ func NewPathfinder(weights Grid[int]) Pathfinder {
 	}
 }
 
+func NewDiagonalPathfinder(weights Grid[int]) Pathfinder {
+	return Pathfinder{
+		weights:   weights,
+		diagonals: true,
+	}
+}
+
 // Find returns a path from start to end. If no path is found, an empty slice
 // is returned.
 func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
+	offsets := cardinalSuccessors
+	if p.diagonals {
+		offsets = diagonalSuccessors
+	}
 	searchSpace := newSearchSpace(p.weights)                  // tracks the open, closed and f values of each node
 	open := newMinHeap(searchSpace.Width, searchSpace.Height) // prioritised queue of f
 
@@ -35,7 +47,7 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 	for open.len() > 0 {
 		qPos := open.pop().pos
 		q := searchSpace.Get(qPos)
-		for _, succPos := range getSuccessors(qPos, searchSpace.Width, searchSpace.Height) {
+		for _, succPos := range getSuccessors(qPos, searchSpace.Width, searchSpace.Height, offsets) {
 			successor := searchSpace.Get(succPos)
 
 			// not traversable
@@ -97,20 +109,31 @@ func abs(x int) int {
 	return x
 }
 
-var successors = [4][2]int{
+var cardinalSuccessors = []Vec2{
 	{0, -1}, // Up
 	{1, 0},  // Right
 	{0, 1},  // Down
 	{-1, 0}, // Left
 }
 
+var diagonalSuccessors = []Vec2{
+	{0, -1},  // Up
+	{1, -1},  // Up-Right
+	{1, 0},   // Right
+	{1, 1},   // Right-Down
+	{0, 1},   // Down
+	{-1, 1},  // Down-Left
+	{-1, 0},  // Left
+	{-1, -1}, // Up-Left
+}
+
 // getSuccessors returns the successors of a vector. If a successor is outside
 // of the grid, it is not included.
-func getSuccessors(vec Vec2, width, height int) []Vec2 {
-	results := make([]Vec2, 0, len(successors))
-	for _, n := range successors {
-		x := vec.X + n[0]
-		y := vec.Y + n[1]
+func getSuccessors(vec Vec2, width, height int, offsets []Vec2) []Vec2 {
+	results := make([]Vec2, 0, len(offsets))
+	for _, n := range offsets {
+		x := vec.X + n.X
+		y := vec.Y + n.Y
 
 		if x < 0 || x >= width || y < 0 || y >= height {
 			continue

@@ -71,7 +71,7 @@ func TestGetSuccessors(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			got := getSuccessors(c.pos, grid.Width, grid.Height)
+			got := getSuccessors(c.pos, grid.Width, grid.Height, cardinalSuccessors)
 			if len(got) != len(c.want) {
 				t.Fatalf("len want %d got %d", len(c.want), len(got))
 			}
