@@ -2,6 +2,7 @@ package astar
 
 import (
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -185,6 +186,30 @@ func renderAsString(grid *Grid[int]) string {
 	for y := range grid.Height {
 		for x := range grid.Width {
 			val := grid.Get(Vec2{x, y})
+			switch val {
+			case 0:
+				sb.WriteRune('\u2588') // block █
+			default:
+				sb.WriteString(strconv.Itoa(val))
+			}
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
+}
+
+func renderWithPathAsString(grid *Grid[int], path []Vec2) string {
+	sb := &strings.Builder{}
+	sb.WriteString("\n")
+	for y := range grid.Height {
+		for x := range grid.Width {
+			val := grid.Get(Vec2{x, y})
+
+			if slices.Contains(path, Vec2{x, y}) {
+				sb.WriteRune('\u25e6')
+				continue
+			}
+
 			switch val {
 			case 0:
 				sb.WriteRune('\u2588') // block █
