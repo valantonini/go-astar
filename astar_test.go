@@ -9,12 +9,12 @@ import (
 )
 
 func TestGetSuccessors_Cardinal(t *testing.T) {
-	w := []int{
+	weights := []int{
 		1, 2, 3,
 		4, 5, 6,
 		7, 8, 9,
 	}
-	grid := NewGridFromSlice(3, 3, w)
+	grid := NewGridFromSlice(3, 3, weights)
 
 	cases := []struct {
 		name string
@@ -85,12 +85,12 @@ func TestGetSuccessors_Cardinal(t *testing.T) {
 }
 
 func TestGetSuccessors_Diagonal(t *testing.T) {
-	w := []int{
+	weights := []int{
 		1, 2, 3,
 		4, 5, 6,
 		7, 8, 9,
 	}
-	grid := NewGridFromSlice(3, 3, w)
+	grid := NewGridFromSlice(3, 3, weights)
 	got := getSuccessors(Vec2{1, 1}, grid.Width, grid.Height, diagonalSuccessors)
 
 	want := []Vec2{
@@ -107,14 +107,14 @@ func TestGetSuccessors_Diagonal(t *testing.T) {
 }
 
 func TestPath_NoDiagonal1(t *testing.T) {
-	w := []int{
+	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0,
 	}
-	grid := NewGridFromSlice(5, 5, w)
+	grid := NewGridFromSlice(5, 5, weights)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
@@ -132,14 +132,14 @@ func TestPath_NoDiagonal1(t *testing.T) {
 }
 
 func TestPath_NoPath(t *testing.T) {
-	w := []int{
+	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
 		0, 0, 0, 1, 0,
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0,
 	}
-	grid := NewGridFromSlice(5, 5, w)
+	grid := NewGridFromSlice(5, 5, weights)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
@@ -152,13 +152,13 @@ func TestPath_NoPath(t *testing.T) {
 }
 
 func TestPath_NoDiagonal2(t *testing.T) {
-	w := []int{
+	weights := []int{
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 1, 0, 1, 1, 1, 0, 0,
 		0, 1, 1, 1, 0, 1, 1, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 	}
-	grid := NewGridFromSlice(8, 4, w)
+	grid := NewGridFromSlice(8, 4, weights)
 
 	pathfinder := NewPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
@@ -178,14 +178,14 @@ func TestPath_NoDiagonal2(t *testing.T) {
 }
 
 func TestPath_Diagonal1(t *testing.T) {
-	w := []int{
+	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 0, 1, 0,
 		0, 1, 1, 1, 0,
 		0, 0, 0, 0, 0,
 	}
-	grid := NewGridFromSlice(5, 5, w)
+	grid := NewGridFromSlice(5, 5, weights)
 
 	pathfinder := NewDiagonalPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
@@ -201,13 +201,13 @@ func TestPath_Diagonal1(t *testing.T) {
 }
 
 func TestPath_Diagonal2(t *testing.T) {
-	w := []int{
+	weights := []int{
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 1, 0, 1, 1, 1, 0, 0,
 		0, 1, 1, 1, 0, 1, 1, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 	}
-	grid := NewGridFromSlice(8, 4, w)
+	grid := NewGridFromSlice(8, 4, weights)
 
 	pathfinder := NewDiagonalPathfinder(grid)
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
@@ -234,6 +234,30 @@ func TestPath_Diagonal2(t *testing.T) {
 		}
 	}
 
+	equal(t, got, want, &grid)
+}
+
+func TestPath_PunishChangeDirection(t *testing.T) {
+	t.Skip("unimplemented")
+	weights := []int{
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+	}
+	grid := NewGridFromSlice(5, 5, weights)
+
+	pathfinder := NewPathfinder(grid)
+	got := pathfinder.Find(Vec2{1, 3}, Vec2{3, 1})
+
+	want := []Vec2{
+		{1, 3},
+		{2, 3},
+		{3, 3},
+		{3, 2},
+		{3, 1},
+	}
 	equal(t, got, want, &grid)
 }
 
