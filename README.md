@@ -6,15 +6,15 @@ A 2d AStar implementation in Go.
 
 ```go
 // will traverse the 1
-w := []int{
+weights := []int{
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 0, 1, 1, 1, 0, 0,
     0, 1, 1, 1, 0, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
 }
-grid := NewGridFromSlice(8, 4, w)
+grid := astar.NewGridFromSlice(8, 4, weights)
 
-pathfinder := NewPathfinder(grid)
+pathfinder := astar.NewPathfinder(grid)
 got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
 
 want := []Vec2{
@@ -28,9 +28,11 @@ want := []Vec2{
     {5, 2},
     {6, 2},
 }
+
+fmt.Println(slices.Equal(got, want)) // true
 ```
 
 To Do:
-- punish change direction
+- punish change direction (in progress)
 
 see [my c# implementation](https://github.com/valantonini/AStar)
