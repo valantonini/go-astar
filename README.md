@@ -1,5 +1,7 @@
 # go-astar
 
+[![Build and test](https://github.com/valantonini/go-astar/actions/workflows/go.yml/badge.svg)](https://github.com/valantonini/go-astar/actions/workflows/go.yml)
+
 A 2d AStar implementation in Go.
 
 ```go
