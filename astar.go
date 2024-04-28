@@ -120,6 +120,18 @@ func getSuccessors(vec Vec2, width, height int) []Vec2 {
 	return results
 }
 
+// node is a node in the search space.
+type node struct {
+	pos    Vec2  // Position
+	parent *node // Parent node
+	g      int   // Cost from start node
+	h      int   // Heuristic cost to end node
+	f      int   // F = G + H
+	weight int   // Weight of the node (0 = impassable)
+	open   bool  // In open list
+	closed bool  // In closed list
+}
+
 // newSearchSpace creates a new search space from the given weights.
 func newSearchSpace(weights Grid[int]) Grid[node] {
 	grid := NewGrid[node](weights.Width, weights.Height)
