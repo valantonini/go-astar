@@ -238,7 +238,7 @@ func TestPath_Diagonal2(t *testing.T) {
 }
 
 func TestPath_PunishChangeDirection(t *testing.T) {
-	t.Skip("unimplemented")
+	t.Skip()
 	weights := []int{
 		1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1,
@@ -259,6 +259,94 @@ func TestPath_PunishChangeDirection(t *testing.T) {
 		{3, 1},
 	}
 	equal(t, got, want, &grid)
+}
+
+func TestPunishChangeDirection_Algo(t *testing.T) {
+	end := Vec2{7, 2}
+	cases := []struct {
+		name string
+		q    node
+		succ Vec2
+		want int
+	}{
+		{
+			name: "x adjacent",
+			q: node{
+				pos: Vec2{1, 2},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{1, 3},
+			want: 0,
+		},
+		{
+			name: "x change dir",
+			q: node{
+				pos: Vec2{1, 2},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{2, 3},
+			want: 6,
+		},
+		{
+			name: "y adjacent",
+			q: node{
+				pos: Vec2{2, 1},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{3, 1},
+			want: 0,
+		},
+		{
+			name: "y change dir",
+			q: node{
+				pos: Vec2{2, 1},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{3, 2},
+			want: 4,
+		},
+		{
+			name: "diag adj",
+			q: node{
+				pos: Vec2{2, 2},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{3, 3},
+			want: 0,
+		},
+		{
+			name: "diag change dir",
+			q: node{
+				pos: Vec2{2, 2},
+				parent: &node{
+					pos: Vec2{1, 1},
+				},
+			},
+			succ: Vec2{3, 4},
+			want: 6,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			got := punishChangeDirection(c.q, c.succ, end)
+
+			if got != c.want {
+				t.Errorf("want: %d got: %d", c.want, got)
+			}
+		})
+	}
+
 }
 
 func equal(t *testing.T, got, want []Vec2, grid *Grid[int]) {
