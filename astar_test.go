@@ -238,7 +238,7 @@ func TestPath_Diagonal2(t *testing.T) {
 }
 
 func TestPath_PunishChangeDirection(t *testing.T) {
-	t.Skip()
+	t.Skip("unimplemented")
 	weights := []int{
 		1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1,
@@ -253,9 +253,9 @@ func TestPath_PunishChangeDirection(t *testing.T) {
 
 	want := []Vec2{
 		{1, 3},
-		{2, 3},
-		{3, 3},
-		{3, 2},
+		{1, 2},
+		{1, 1},
+		{2, 1},
 		{3, 1},
 	}
 	equal(t, got, want, &grid)

@@ -141,24 +141,19 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 	return []Vec2{}
 }
 
+// punishChangeDirection returns a punishment for changing direction that can be applied to g.
 func punishChangeDirection(q node, successor, end Vec2) int {
 	if q.parent == nil {
 		return 0
 	}
 	punishment := abs(successor.X-end.X) + abs(successor.Y-end.Y)
 
-	isHorizAdj := func(a, b Vec2) bool {
-		return a.Y-b.Y == 0
-	}
 	if !isHorizAdj(q.pos, successor) {
 		if isHorizAdj(q.pos, q.parent.pos) {
 			return punishment
 		}
 	}
 
-	isVertAdj := func(a, b Vec2) bool {
-		return a.X-b.X == 0
-	}
 	if !isVertAdj(q.pos, successor) {
 		if isVertAdj(q.pos, q.parent.pos) {
 			return punishment
@@ -166,11 +161,8 @@ func punishChangeDirection(q node, successor, end Vec2) int {
 	}
 
 	// todo: check option if diagonal enabled
-	isDiagonal := func(a, b Vec2) bool {
-		return abs(a.X-b.X) == abs(a.Y-b.Y)
-	}
-	if !isDiagonal(q.pos, successor) {
-		if isDiagonal(q.pos, q.parent.pos) {
+	if !isDiagAdj(q.pos, successor) {
+		if isDiagAdj(q.pos, q.parent.pos) {
 			return punishment
 		}
 	}
