@@ -1,9 +1,9 @@
 package astar
 
-// Vec2 is a 2D vector.
+// Vec2 defines a 2D vector.
 type Vec2 struct {
-	X int
-	Y int
+	X int // X denotes the horizontal position.
+	Y int // Y denotes the vertical position.
 }
 
 // isHorizAdj returns true if a and b are horizontally adjacent.

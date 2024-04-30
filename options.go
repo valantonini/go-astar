@@ -10,10 +10,10 @@ const (
 )
 
 // Option is a functional option for the pathfinder.
-type Option func(o *Options)
+type Option func(o *option)
 
-// Options contains the options for the pathfinder.
-type Options struct {
+// option contains the options for the pathfinder.
+type option struct {
 	diagonals             bool
 	heuristic             heuristic
 	punishChangeDirection bool
@@ -21,14 +21,14 @@ type Options struct {
 
 // WithDiagonals enables diagonal movement in the search space.
 func WithDiagonals() Option {
-	return Option(func(o *Options) {
+	return Option(func(o *option) {
 		o.diagonals = true
 	})
 }
 
 // PunishChangeDirection punishes changing direction when calculating G.
 func PunishChangeDirection() Option {
-	return Option(func(o *Options) {
+	return Option(func(o *option) {
 		o.punishChangeDirection = true
 	})
 }

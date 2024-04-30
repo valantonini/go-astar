@@ -48,7 +48,7 @@ type node struct {
 // Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
 	weights       Grid[int]
-	options       Options
+	options       option
 	heuristic     heuristicFunc
 	getSuccessors getSuccessorsFunc
 }
@@ -58,7 +58,7 @@ type Pathfinder struct {
 // 0 means the cell is not traversable. A weight of 1 or higher means the cell
 // is traversable.
 func NewPathfinder(weights Grid[int], opts ...Option) Pathfinder {
-	opt := Options{
+	opt := option{
 		heuristic: man,
 	}
 
