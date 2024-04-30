@@ -187,7 +187,7 @@ func TestPath_Diagonal1(t *testing.T) {
 	}
 	grid := NewGridFromSlice(5, 5, weights)
 
-	pathfinder := NewDiagonalPathfinder(grid)
+	pathfinder := NewPathfinder(grid, WithDiagonals())
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{3, 1})
 
 	want := []Vec2{
@@ -209,7 +209,7 @@ func TestPath_Diagonal2(t *testing.T) {
 	}
 	grid := NewGridFromSlice(8, 4, weights)
 
-	pathfinder := NewDiagonalPathfinder(grid)
+	pathfinder := NewPathfinder(grid, WithDiagonals())
 	got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
 
 	want := []Vec2{

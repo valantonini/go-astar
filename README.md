@@ -15,7 +15,7 @@ weights := []int{
 grid := astar.NewGridFromSlice(8, 4, weights)
 
 pathfinder := astar.NewPathfinder(grid)
-got := pathfinder.Find(Vec2{1, 1}, Vec2{6, 2})
+got := pathfinder.Find(astar.Vec2{1, 1}, astar.Vec2{6, 2})
 
 want := []Vec2{
     {1, 1},

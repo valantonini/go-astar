@@ -48,35 +48,50 @@ type node struct {
 // Pathfinder is a simple A* pathfinding algorithm implementation.
 type Pathfinder struct {
 	weights       Grid[int]
+	options       Options
 	heuristic     heuristicFunc
 	getSuccessors getSuccessorsFunc
 }
 
-// NewPathfinder creates a new Pathfinder with the given weights. The weights
-// are used to determine the cost of traversing a cell. A weight of 0 means the
-// cell is not traversable. A weight of 1 or higher means the cell is
-// traversable.
-func NewPathfinder(weights Grid[int]) Pathfinder {
-	return Pathfinder{
+// NewPathfinder creates a new Pathfinder with the given weights and options.
+// The weights are used to determine the cost of traversing a cell. A weight of
+// 0 means the cell is not traversable. A weight of 1 or higher means the cell
+// is traversable.
+func NewPathfinder(weights Grid[int], opts ...Option) Pathfinder {
+	opt := Options{
+		heuristic: man,
+	}
+
+	for _, optFunc := range opts {
+		optFunc(&opt)
+	}
+
+	pf := Pathfinder{
 		weights:   weights,
+		options:   opt,
 		heuristic: manhattan,
 		getSuccessors: func(v Vec2) []Vec2 {
 			return getSuccessors(v, weights.Width, weights.Height, cardinalSuccessors)
 		},
 	}
-}
 
-// NewDiagonalPathfinder creates a new Pathfinder with the given weights that
-// supports diagonal movement. A weight of 0 means the cell is not traversable.
-// A weight of 1 or higher means the cell is traversable.
-func NewDiagonalPathfinder(weights Grid[int]) Pathfinder {
-	return Pathfinder{
-		weights:   weights,
-		heuristic: diagonalDistance,
-		getSuccessors: func(v Vec2) []Vec2 {
-			return getSuccessors(v, weights.Width, weights.Height, diagonalSuccessors)
-		},
+	switch opt.heuristic {
+	case man:
+		pf.heuristic = manhattan
+	case dd:
+		pf.heuristic = diagonalDistance
 	}
+
+	if opt.diagonals {
+		if opt.heuristic == man {
+			pf.heuristic = diagonalDistance
+		}
+		pf.getSuccessors = func(v Vec2) []Vec2 {
+			return getSuccessors(v, weights.Width, weights.Height, diagonalSuccessors)
+		}
+	}
+
+	return pf
 }
 
 // Find returns a path from start to end. If no path is found, an empty slice
