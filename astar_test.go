@@ -238,7 +238,6 @@ func TestPath_Diagonal2(t *testing.T) {
 }
 
 func TestPath_PunishChangeDirection(t *testing.T) {
-	t.Skip("unimplemented")
 	weights := []int{
 		1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1,
@@ -248,7 +247,7 @@ func TestPath_PunishChangeDirection(t *testing.T) {
 	}
 	grid := NewGridFromSlice(5, 5, weights)
 
-	pathfinder := NewPathfinder(grid)
+	pathfinder := NewPathfinder(grid, PunishChangeDirection())
 	got := pathfinder.Find(Vec2{1, 3}, Vec2{3, 1})
 
 	want := []Vec2{

@@ -17,7 +17,7 @@ grid := astar.NewGridFromSlice(8, 4, weights)
 pathfinder := astar.NewPathfinder(grid)
 got := pathfinder.Find(astar.Vec2{1, 1}, astar.Vec2{6, 2})
 
-want := []Vec2{
+want := []astar.Vec2{
     {1, 1},
     {1, 2},
     {2, 2},
@@ -31,8 +31,5 @@ want := []Vec2{
 
 fmt.Println(slices.Equal(got, want)) // true
 ```
-
-To Do:
-- punish change direction (in progress)
 
 see [my c# implementation](https://github.com/valantonini/AStar)

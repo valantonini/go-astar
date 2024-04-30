@@ -120,6 +120,9 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 
 			successor.parent = &q
 			successor.g = q.g + p.heuristic(qPos, succPos)
+			if p.options.punishChangeDirection {
+				successor.g += punishChangeDirection(q, succPos, endPos)
+			}
 			successor.h = p.heuristic(succPos, endPos)
 			successor.f = successor.g + successor.h
 			successor.open = true
