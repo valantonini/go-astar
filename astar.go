@@ -1,6 +1,7 @@
 package astar
 
 import (
+	"fmt"
 	"math"
 	"slices"
 )
@@ -80,6 +81,10 @@ func NewPathfinder(weights Grid[int], opts ...Option) Pathfinder {
 		pf.heuristic = manhattan
 	case dd:
 		pf.heuristic = diagonalDistance
+	case euc:
+		pf.heuristic = euclideanDistance
+	default:
+		fmt.Printf("unknown heuristic: %d", opt.heuristic)
 	}
 
 	if opt.diagonals {
@@ -196,14 +201,19 @@ func manhattan(v1, v2 Vec2) int {
 
 // diagonalDistance calculates the diagonal distance between two vectors.
 func diagonalDistance(v1, v2 Vec2) int {
-	// node length
-	const nodeLength = 1
-	// node diagonal distance
-	var diagonalDistanceBetweenNode = math.Sqrt(2)
-
 	dx := abs(v1.X - v2.X)
 	dy := abs(v1.Y - v2.Y)
-	h := float64(nodeLength*(dx+dy)) + (diagonalDistanceBetweenNode-2*nodeLength)*float64(min(dx, dy))
+	diagonal := float64(min(dx, dy))
+	straight := float64(dx + dy)
+	return int(straight + (float64(math.Sqrt2)-2)*diagonal)
+}
+
+// euclideanDistance calculates the Euclidean distance between two vectors.
+func euclideanDistance(v1, v2 Vec2) int {
+	// pythagorean
+	h := math.Sqrt(
+		math.Pow(float64(v1.X-v2.X), 2) + math.Pow(float64(v1.Y-v2.Y), 2),
+	)
 	return int(h)
 }
 

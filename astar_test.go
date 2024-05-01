@@ -237,6 +237,124 @@ func TestPath_Diagonal2(t *testing.T) {
 	equal(t, got, want, &grid)
 }
 
+func TestEuclideanDistance(t *testing.T) {
+	tests := []struct {
+		name     string
+		v1, v2   Vec2
+		expected int
+	}{
+		{
+			name:     "distance between same points",
+			v1:       Vec2{X: 1, Y: 1},
+			v2:       Vec2{X: 1, Y: 1},
+			expected: 0,
+		},
+		{
+			name:     "distance between different points",
+			v1:       Vec2{X: 1, Y: 1},
+			v2:       Vec2{X: 4, Y: 5},
+			expected: 5,
+		},
+		{
+			name:     "distance with negative coordinates",
+			v1:       Vec2{X: -1, Y: -1},
+			v2:       Vec2{X: -4, Y: -5},
+			expected: 5,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := euclideanDistance(tt.v1, tt.v2); got != tt.expected {
+				t.Errorf("euclideanDistance() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestDiagonalDistance(t *testing.T) {
+	tests := []struct {
+		name string
+		v1   Vec2
+		v2   Vec2
+		want int
+	}{
+		{
+			name: "same point",
+			v1:   Vec2{0, 0},
+			v2:   Vec2{0, 0},
+			want: 0,
+		},
+		{
+			name: "one step diagonal",
+			v1:   Vec2{0, 0},
+			v2:   Vec2{1, 1},
+			want: 1,
+		},
+		{
+			name: "two steps diagonal",
+			v1:   Vec2{0, 0},
+			v2:   Vec2{2, 2},
+			want: 2,
+		},
+		{
+			name: "one step straight, one step diagonal",
+			v1:   Vec2{0, 0},
+			v2:   Vec2{2, 1},
+			want: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := diagonalDistance(tt.v1, tt.v2); got != tt.want {
+				t.Errorf("diagonalDistance() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPath_Larger(t *testing.T) {
+	t.Skip("experimental playground")
+	weights := []int{
+		0, 1, 1, 1, 1, 1, 1, 1,
+		0, 0, 0, 0, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 0, 0, 0, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1,
+	}
+	grid := NewGridFromSlice(8, 8, weights)
+
+	pathfinder := NewPathfinder(grid, WithDiagonals(), EuclideanDistance())
+	got := pathfinder.Find(Vec2{4, 6}, Vec2{1, 0})
+
+	want := []Vec2{
+		{1, 1},
+		{2, 2},
+		{3, 2},
+		{4, 1},
+		{5, 2},
+		{6, 2},
+	}
+
+	if len(got) != len(want) {
+		t.Errorf("len want %d got %d", len(want), len(got))
+	}
+
+	for i := range want {
+		if i >= len(got) {
+			break
+		}
+		if got[i] != want[i] {
+			t.Errorf("pos %d want %v got %v", i, want[i], got[i])
+		}
+	}
+
+	equal(t, got, want, &grid)
+}
 func TestPath_PunishChangeDirection(t *testing.T) {
 	weights := []int{
 		1, 1, 1, 1, 1,
@@ -411,7 +529,8 @@ func renderWithPathAsString(grid *Grid[int], path []Vec2) string {
 			case 0:
 				sb.WriteRune('\u2588') // block █
 			default:
-				sb.WriteString(strconv.Itoa(val))
+				// sb.WriteString(strconv.Itoa(val))
+				sb.WriteString(".")
 			}
 		}
 		sb.WriteString("\n")
