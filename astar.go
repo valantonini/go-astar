@@ -178,7 +178,6 @@ func punishChangeDirection(q node, successor, end Vec2) int {
 		}
 	}
 
-	// todo: check option if diagonal enabled
 	if !isDiagAdj(q.pos, successor) {
 		if isDiagAdj(q.pos, q.parent.pos) {
 			return punishment
