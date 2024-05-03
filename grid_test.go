@@ -9,16 +9,16 @@ func TestGrid(t *testing.T) {
 	board := NewGrid[int](3, 3)
 
 	i := 0
-	for x := 0; x < board.Width; x++ {
-		for y := 0; y < board.Height; y++ {
+	for x := range board.Width {
+		for y := range board.Height {
 			i++
 			board.Set(Vec2{x, y}, i)
 		}
 	}
 
 	want := 0
-	for x := 0; x < board.Width; x++ {
-		for y := 0; y < board.Height; y++ {
+	for x := range board.Width {
+		for y := range board.Height {
 			want++
 			got := board.Get(Vec2{x, y})
 			if got != want {
@@ -37,8 +37,8 @@ func TestGridFromSlice(t *testing.T) {
 	})
 
 	want := 0
-	for y := 0; y < board.Height; y++ {
-		for x := 0; x < board.Width; x++ {
+	for y := range board.Width {
+		for x := range board.Height {
 			want++
 			got := board.Get(Vec2{x, y})
 			if got != want {
