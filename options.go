@@ -7,7 +7,7 @@ const (
 	man heuristic = iota
 	// Diagonal distance heuristic.
 	dd
-	// Euclidean distance heuristic
+	// Euclidean distance heuristic.
 	euc
 )
 

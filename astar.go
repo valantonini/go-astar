@@ -1,7 +1,7 @@
 package astar
 
 import (
-	"fmt"
+	"log"
 	"math"
 	"slices"
 )
@@ -84,7 +84,7 @@ func NewPathfinder(weights Grid[int], opts ...Option) Pathfinder {
 	case euc:
 		pf.heuristic = euclideanDistance
 	default:
-		fmt.Printf("unknown heuristic: %d", opt.heuristic)
+		log.Printf("unknown heuristic: %d", opt.heuristic)
 	}
 
 	if opt.diagonals {
@@ -135,7 +135,7 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 			// found
 			if succPos == endPos {
 				path := []Vec2{}
-				var curr *node = &successor
+				curr := &successor
 				for curr != nil {
 					path = append(path, curr.pos)
 					curr = curr.parent

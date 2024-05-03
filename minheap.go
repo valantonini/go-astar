@@ -18,6 +18,7 @@ func newMinHeap(width, height int) *minHeap {
 	heap := &minHeap{
 		width:  width,
 		height: height,
+		inner:  []heapNode{},
 	}
 
 	return heap

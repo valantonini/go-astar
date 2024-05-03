@@ -355,6 +355,7 @@ func TestPath_Larger(t *testing.T) {
 
 	equal(t, got, want, &grid)
 }
+
 func TestPath_PunishChangeDirection(t *testing.T) {
 	weights := []int{
 		1, 1, 1, 1, 1,
@@ -463,7 +464,6 @@ func TestPunishChangeDirection_Algo(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func equal(t *testing.T, got, want []Vec2, grid *Grid[int]) {
