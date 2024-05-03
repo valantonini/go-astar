@@ -9,6 +9,7 @@ import (
 )
 
 func TestGetSuccessors_Cardinal(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		1, 2, 3,
 		4, 5, 6,
@@ -71,6 +72,7 @@ func TestGetSuccessors_Cardinal(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			got := getSuccessors(c.pos, grid.Width, grid.Height, cardinalSuccessors)
 			if len(got) != len(c.want) {
 				t.Fatalf("len want %d got %d", len(c.want), len(got))
@@ -85,6 +87,7 @@ func TestGetSuccessors_Cardinal(t *testing.T) {
 }
 
 func TestGetSuccessors_Diagonal(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		1, 2, 3,
 		4, 5, 6,
@@ -107,6 +110,7 @@ func TestGetSuccessors_Diagonal(t *testing.T) {
 }
 
 func TestPath_NoDiagonal1(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
@@ -132,6 +136,7 @@ func TestPath_NoDiagonal1(t *testing.T) {
 }
 
 func TestPath_NoPath(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
@@ -152,6 +157,7 @@ func TestPath_NoPath(t *testing.T) {
 }
 
 func TestPath_NoDiagonal2(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 1, 0, 1, 1, 1, 0, 0,
@@ -178,6 +184,7 @@ func TestPath_NoDiagonal2(t *testing.T) {
 }
 
 func TestPath_Diagonal1(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		0, 0, 0, 0, 0,
 		0, 1, 0, 1, 0,
@@ -201,6 +208,7 @@ func TestPath_Diagonal1(t *testing.T) {
 }
 
 func TestPath_Diagonal2(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 1, 0, 1, 1, 1, 0, 0,
@@ -238,6 +246,7 @@ func TestPath_Diagonal2(t *testing.T) {
 }
 
 func TestEuclideanDistance(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		v1, v2   Vec2
@@ -265,6 +274,7 @@ func TestEuclideanDistance(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := euclideanDistance(tt.v1, tt.v2); got != tt.expected {
 				t.Errorf("euclideanDistance() = %v, want %v", got, tt.expected)
 			}
@@ -273,6 +283,7 @@ func TestEuclideanDistance(t *testing.T) {
 }
 
 func TestDiagonalDistance(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		v1   Vec2
@@ -307,6 +318,7 @@ func TestDiagonalDistance(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := diagonalDistance(tt.v1, tt.v2); got != tt.want {
 				t.Errorf("diagonalDistance() = %v, want %v", got, tt.want)
 			}
@@ -316,6 +328,7 @@ func TestDiagonalDistance(t *testing.T) {
 
 func TestPath_Larger(t *testing.T) {
 	t.Skip("experimental playground")
+	t.Parallel()
 	weights := []int{
 		0, 1, 1, 1, 1, 1, 1, 1,
 		0, 0, 0, 0, 1, 1, 1, 1,
@@ -357,6 +370,7 @@ func TestPath_Larger(t *testing.T) {
 }
 
 func TestPath_PunishChangeDirection(t *testing.T) {
+	t.Parallel()
 	weights := []int{
 		1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1,
@@ -380,6 +394,7 @@ func TestPath_PunishChangeDirection(t *testing.T) {
 }
 
 func TestPunishChangeDirection_Algo(t *testing.T) {
+	t.Parallel()
 	end := Vec2{7, 2}
 	cases := []struct {
 		name string
@@ -457,6 +472,7 @@ func TestPunishChangeDirection_Algo(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			got := punishChangeDirection(c.q, c.succ, end)
 
 			if got != c.want {

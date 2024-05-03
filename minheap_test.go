@@ -6,6 +6,7 @@ import (
 )
 
 func TestMinHeap_Peek(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		name string
 		data []int
@@ -21,6 +22,7 @@ func TestMinHeap_Peek(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			heap := &minHeap{}
 			for _, n := range c.data {
 				heap.push(heapNode{f: n})
@@ -40,6 +42,7 @@ func TestMinHeap_Peek(t *testing.T) {
 }
 
 func TestMinHeap_Pop(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		name string
 		data []int
@@ -55,6 +58,7 @@ func TestMinHeap_Pop(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			heap := &minHeap{}
 			for _, n := range c.data {
 				heap.push(heapNode{f: n})

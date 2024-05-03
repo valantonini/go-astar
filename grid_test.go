@@ -5,6 +5,7 @@ import (
 )
 
 func TestGrid(t *testing.T) {
+	t.Parallel()
 	board := NewGrid[int](3, 3)
 
 	i := 0
@@ -28,6 +29,7 @@ func TestGrid(t *testing.T) {
 }
 
 func TestGridFromSlice(t *testing.T) {
+	t.Parallel()
 	board := NewGridFromSlice(3, 3, []int{
 		1, 2, 3,
 		4, 5, 6,

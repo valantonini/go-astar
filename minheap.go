@@ -61,12 +61,12 @@ func (h *minHeap) peek() heapNode {
 
 // pop removes and returns the element at the top of the heap. If the heap is
 // empty,it will panic.
-func (h *minHeap) pop() (result heapNode) {
+func (h *minHeap) pop() heapNode {
 	if len(h.inner) == 0 {
 		panic("heap empty")
 	}
 
-	result = h.inner[0]
+	result := h.inner[0]
 
 	// arbitrarily choose last item as head
 	h.inner[0] = h.inner[len(h.inner)-1]

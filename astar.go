@@ -124,10 +124,13 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 			}
 
 			successor.parent = &q
-			successor.g = q.g + p.heuristic(qPos, succPos)
+
+			g := q.g + p.heuristic(qPos, succPos)
 			if p.options.punishChangeDirection {
-				successor.g += punishChangeDirection(q, succPos, endPos)
+				g += punishChangeDirection(q, succPos, endPos)
 			}
+
+			successor.g = g
 			successor.h = p.heuristic(succPos, endPos)
 			successor.f = successor.g + successor.h
 			successor.open = true
@@ -149,6 +152,7 @@ func (p Pathfinder) Find(startPos, endPos Vec2) []Vec2 {
 			if existingSuccessor.open && existingSuccessor.f < successor.f {
 				continue
 			}
+
 			if existingSuccessor.closed && existingSuccessor.f < successor.f {
 				continue
 			}
@@ -169,6 +173,7 @@ func punishChangeDirection(q node, successor, end Vec2) int {
 	if q.parent == nil {
 		return 0
 	}
+
 	punishment := abs(successor.X-end.X) + abs(successor.Y-end.Y)
 
 	if !isHorizAdj(q.pos, successor) {
@@ -244,6 +249,7 @@ func getSuccessors(vec Vec2, width, height int, offsets []Vec2) []Vec2 {
 		if x < 0 || x >= width || y < 0 || y >= height {
 			continue
 		}
+
 		results = append(results, Vec2{x, y})
 	}
 	return results
